@@ -1,1100 +1,2392 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Giải Cứu Vương Quốc Số Hữu Tỉ - Toán 7</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Be Vietnam Pro"', 'system-ui', 'sans-serif'],
-                    },
-                    colors: {
-                        royal: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #312e81 100%);
-        }
-        /* Hiển thị phân số thẳng đứng sắc nét trên mọi điện thoại */
-        .frac {
-            display: inline-flex;
-            flex-direction: column;
-            vertical-align: middle;
-            text-align: center;
-            margin: 0 3px;
-            font-weight: 700;
-            font-size: 0.92em;
-        }
-        .frac > span:first-child {
-            border-bottom: 2px solid currentColor;
-            padding: 0 4px 1px 4px;
-            line-height: 1.1;
-        }
-        .frac > span:last-child {
-            padding: 1px 4px 0 4px;
-            line-height: 1.1;
-        }
-        /* Hỗn số */
-        .mixed {
-            display: inline-flex;
-            align-items: center;
-            vertical-align: middle;
-            font-weight: 700;
-        }
-        /* Hiệu ứng rung nhẹ khi sai và nảy khi đúng */
-        @keyframes popIn {
-            0% { transform: scale(0.92); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .pop-in {
-            animation: popIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        @keyframes floatHero {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-6px); }
-        }
-        .float-hero {
-            animation: floatHero 2.5s ease-in-out infinite;
-        }
-        /* Thanh cuộn mượt */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 9999px; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Vương Quốc Hữu Tỉ - Toán 7</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-sky: linear-gradient(180deg, #9ad9ff 0%, #d8f2ff 60%, #e7f9ec 100%);
+      --navy: #231f42;
+      --gold: #ffc42e;
+      --gold-dark: #e09f00;
+      --cream: #fffdf7;
+      --green: #22c55e;
+      --green-bg: #dcfce7;
+      --red: #ef4444;
+      --red-bg: #fee2e2;
+      --card-shadow: 0 5px 0 var(--navy);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #1a1830;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      color: var(--navy);
+    }
+
+    #app {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      background: var(--bg-sky);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      box-shadow: 0 0 30px rgba(0,0,0,0.4);
+    }
+
+    /* Clouds decoration */
+    .cloud {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .cloud::before, .cloud::after {
+      content: '';
+      position: absolute;
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: 50%;
+    }
+    .c1 { width: 120px; height: 36px; top: 75px; left: -20px; }
+    .c1::before { width: 50px; height: 50px; top: -24px; left: 20px; }
+    .c2 { width: 140px; height: 40px; top: 145px; right: -25px; }
+    .c2::before { width: 60px; height: 60px; top: -28px; left: 30px; }
+
+    /* Screens */
+    .screen {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      z-index: 1;
+      padding: 16px;
+    }
+    .screen.active {
+      display: flex;
+    }
+
+    /* Buttons */
+    .btn {
+      border: 3px solid var(--navy);
+      border-radius: 18px;
+      padding: 14px 18px;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--navy);
+      background: #ffffff;
+      box-shadow: var(--card-shadow);
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+    }
+    .btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 var(--navy);
+    }
+    .btn-gold {
+      background: var(--gold);
+    }
+    .btn-green {
+      background: #4ade80;
+    }
+    .btn-sm {
+      padding: 9px 14px;
+      font-size: 15px;
+      border-radius: 14px;
+      box-shadow: 0 3px 0 var(--navy);
+      width: auto;
+    }
+
+    /* Home Screen */
+    .home-wrap {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding-top: 24px;
+      padding-bottom: 24px;
+      gap: 14px;
+    }
+    .q-logo {
+      width: 84px;
+      height: 84px;
+      margin: 0 auto;
+    }
+    .game-title {
+      font-size: 38px;
+      font-weight: 900;
+      line-height: 1.1;
+      margin: 4px 0;
+      color: var(--gold);
+      -webkit-text-stroke: 2.2px var(--navy);
+      text-shadow: 0 4px 0 var(--navy);
+      letter-spacing: 0.5px;
+    }
+    .game-title span {
+      display: block;
+      color: #ffffff;
+    }
+    .subtitle {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+    .teacher-card {
+      background: var(--cream);
+      border: 3px solid var(--navy);
+      border-radius: 18px;
+      padding: 12px 16px;
+      width: 100%;
+      box-shadow: 0 4px 0 var(--navy);
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+    .lands-preview {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      font-size: 34px;
+      margin: 8px 0;
+    }
+    .audio-controls {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      justify-content: center;
+      margin-top: 4px;
+    }
+    .teacher-link {
+      background: none;
+      border: none;
+      color: var(--navy);
+      font-size: 15px;
+      font-weight: 800;
+      text-decoration: underline;
+      cursor: pointer;
+      margin-top: 6px;
+      padding: 6px;
+    }
+
+    /* Top HUD */
+    .hud {
+      background: rgba(255, 255, 255, 0.92);
+      border-bottom: 3px solid var(--navy);
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .hud-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+    }
+    .avatar-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #fde68a;
+      border: 3px solid var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .hud-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .hud-name-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 15px;
+      font-weight: 900;
+    }
+    .hud-lvl {
+      color: #6366f1;
+      font-size: 13px;
+    }
+    .xp-bar {
+      width: 100%;
+      height: 10px;
+      background: #e2e8f0;
+      border: 2px solid var(--navy);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 3px;
+    }
+    .xp-fill {
+      height: 100%;
+      background: #8b5cf6;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .xp-text {
+      font-size: 11px;
+      font-weight: 800;
+      color: #475569;
+    }
+    .coin-pill {
+      background: #fffbeb;
+      border: 2.5px solid var(--navy);
+      border-radius: 99px;
+      padding: 5px 10px;
+      font-weight: 900;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 2.5px solid var(--navy);
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* Map Screen */
+    .map-container {
+      flex: 1;
+      padding: 20px 16px 90px;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      gap: 28px;
+      position: relative;
+    }
+    .land-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      width: 210px;
+    }
+    .land-node:nth-child(odd) { align-self: flex-start; margin-left: 16px; }
+    .land-node:nth-child(even) { align-self: flex-end; margin-right: 16px; }
+    .land-circle {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      border: 4px solid var(--navy);
+      background: #dcfce7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      box-shadow: 0 5px 0 var(--navy);
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.1s;
+    }
+    .land-circle:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 var(--navy);
+    }
+    .land-circle.locked {
+      background: #cbd5e1;
+      cursor: not-allowed;
+      opacity: 0.85;
+    }
+    .land-badge-char {
+      position: absolute;
+      top: -16px;
+      right: -14px;
+      font-size: 28px;
+      background: #fff;
+      border: 2px solid var(--navy);
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: bounce 1.4s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .land-label {
+      margin-top: 8px;
+      background: #ffffff;
+      border: 2.5px solid var(--navy);
+      border-radius: 14px;
+      padding: 6px 12px;
+      font-weight: 900;
+      font-size: 15px;
+      text-align: center;
+      box-shadow: 0 3px 0 var(--navy);
+    }
+    .land-status {
+      margin-top: 4px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #d97706;
+    }
+    .land-status.locked-txt {
+      color: #64748b;
+    }
+
+    /* Bottom Nav */
+    .bottom-nav {
+      position: sticky;
+      bottom: 0;
+      background: #ffffff;
+      border-top: 3px solid var(--navy);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 4px;
+      z-index: 20;
+    }
+    .nav-item {
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #64748b;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 12px;
+    }
+    .nav-item.active {
+      background: #fef3c7;
+      color: var(--navy);
+    }
+    .nav-item span.ico {
+      font-size: 22px;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+    }
+    .modal-backdrop.open {
+      display: flex;
+    }
+    .modal-box {
+      background: var(--cream);
+      border: 3.5px solid var(--navy);
+      border-radius: 24px;
+      padding: 20px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 8px 0 var(--navy);
+      text-align: center;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .diff-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 16px 0;
+    }
+    .diff-card {
+      border: 3px solid var(--navy);
+      border-radius: 16px;
+      padding: 12px 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 0 var(--navy);
+      transition: transform 0.08s;
+    }
+    .diff-card:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 var(--navy);
+    }
+    .diff-easy { background: #dcfce7; }
+    .diff-med { background: #fef08a; }
+    .diff-hard { background: #fecdd3; }
+    .diff-card h4 { margin: 0 0 4px; font-size: 17px; font-weight: 900; }
+    .diff-card p { margin: 2px 0; font-size: 12px; font-weight: 700; }
+
+    /* Quiz Screen */
+    .quiz-subbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      background: rgba(255,255,255,0.75);
+      border-bottom: 2px solid rgba(35,31,66,0.15);
+    }
+    .hearts {
+      font-size: 18px;
+      letter-spacing: 2px;
+    }
+    .progress-segments {
+      display: flex;
+      gap: 5px;
+      padding: 10px 16px 4px;
+    }
+    .seg {
+      flex: 1;
+      height: 8px;
+      border-radius: 99px;
+      background: #ffffff;
+      border: 2px solid var(--navy);
+    }
+    .seg.done { background: #22c55e; }
+    .seg.current { background: var(--gold); }
+    .seg.wrong { background: #ef4444; }
+
+    .question-card {
+      background: var(--cream);
+      border: 3.5px solid var(--navy);
+      border-radius: 22px;
+      padding: 16px;
+      margin: 10px 14px;
+      box-shadow: var(--card-shadow);
+    }
+    .q-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .q-type {
+      font-size: 12px;
+      font-weight: 900;
+      color: #64748b;
+      letter-spacing: 0.5px;
+    }
+    .q-badge {
+      font-size: 12px;
+      font-weight: 900;
+      padding: 3px 10px;
+      border-radius: 99px;
+      border: 2px solid var(--navy);
+      background: #fef08a;
+    }
+    .q-text {
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    /* Fraction formatting */
+    .frac {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      vertical-align: middle;
+      margin: 0 3px;
+      font-size: 0.88em;
+      line-height: 1.05;
+    }
+    .frac > span:first-child {
+      border-bottom: 2px solid currentColor;
+      padding: 0 3px 1px;
+    }
+    .frac > span:last-child {
+      padding: 1px 3px 0;
+    }
+
+    /* Options */
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .opt-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #ffffff;
+      border: 3px solid var(--navy);
+      border-radius: 16px;
+      padding: 11px 14px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: left;
+      box-shadow: 0 3px 0 var(--navy);
+      transition: all 0.1s;
+    }
+    .opt-btn.selected {
+      background: #fef3c7;
+      border-color: #d97706;
+      transform: translateY(-1px);
+    }
+    .opt-btn.correct {
+      background: var(--green-bg);
+      border-color: var(--green);
+    }
+    .opt-btn.incorrect {
+      background: var(--red-bg);
+      border-color: var(--red);
+    }
+    .opt-btn.eliminated {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .opt-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: var(--gold);
+      border: 2px solid var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    /* Fill-in Input */
+    .fill-display {
+      width: 100%;
+      min-height: 54px;
+      background: #ffffff;
+      border: 3px solid #3b82f6;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 900;
+      padding: 8px;
+      margin-bottom: 6px;
+    }
+    .fill-preview {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 800;
+      color: #475569;
+      margin-bottom: 10px;
+      min-height: 28px;
+    }
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .key-btn {
+      background: #ffffff;
+      border: 2.5px solid var(--navy);
+      border-radius: 12px;
+      padding: 10px 4px;
+      font-size: 18px;
+      font-weight: 900;
+      box-shadow: 0 3px 0 var(--navy);
+      cursor: pointer;
+    }
+    .key-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 var(--navy);
+    }
+
+    /* Power-ups bar */
+    .powerups-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 4px 14px 12px;
+    }
+    .pu-btn {
+      background: #ffffff;
+      border: 2.5px solid var(--navy);
+      border-radius: 14px;
+      padding: 8px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      font-size: 12px;
+      font-weight: 800;
+      box-shadow: 0 3px 0 var(--navy);
+      cursor: pointer;
+    }
+    .pu-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .pu-ico { font-size: 20px; }
+    .pu-sub { font-size: 11px; color: #4f46e5; }
+
+    /* Hint Box (3 levels) */
+    .hint-box {
+      margin: 0 14px 12px;
+      background: #eff6ff;
+      border: 3px solid #2563eb;
+      border-radius: 16px;
+      padding: 12px 14px;
+      font-size: 15px;
+      font-weight: 700;
+      display: none;
+    }
+    .hint-box.show { display: block; }
+    .hint-step {
+      padding: 6px 0;
+      border-bottom: 1px dashed #93c5fd;
+    }
+    .hint-step:last-child { border-bottom: none; }
+
+    /* Explanation Panel */
+    .result-panel {
+      margin: 0 14px 20px;
+      border: 3.5px solid var(--navy);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: var(--card-shadow);
+      display: none;
+    }
+    .result-panel.show { display: block; }
+    .result-panel.ok { background: #dcfce7; }
+    .result-panel.bad { background: #fee2e2; }
+    .res-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .res-title {
+      font-size: 22px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .res-rewards {
+      display: flex;
+      gap: 6px;
+    }
+    .rew-pill {
+      background: #ffffff;
+      border: 2px solid var(--navy);
+      border-radius: 99px;
+      padding: 3px 9px;
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .res-card {
+      background: #ffffff;
+      border: 2.5px solid var(--navy);
+      border-radius: 14px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+    .mistake-card {
+      background: #fffbeb;
+      border: 2.5px solid #d97706;
+      border-radius: 14px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #92400e;
+    }
+
+    /* Sub-tabs content (Shop, Badges, Profile) */
+    .tab-page {
+      padding: 16px 16px 90px;
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .tab-page.active {
+      display: flex;
+    }
+    .card-box {
+      background: var(--cream);
+      border: 3px solid var(--navy);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 4px 0 var(--navy);
+    }
+    .badge-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .badge-item {
+      background: #ffffff;
+      border: 2.5px solid var(--navy);
+      border-radius: 16px;
+      padding: 12px;
+      text-align: center;
+      opacity: 0.45;
+    }
+    .badge-item.unlocked {
+      opacity: 1;
+      background: #fef9c3;
+    }
+    .input-field {
+      width: 100%;
+      padding: 12px;
+      border: 3px solid var(--navy);
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 800;
+      margin: 6px 0 12px;
+    }
+    .avatar-picker {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 10px 0 16px;
+    }
+    .av-opt {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 3px solid var(--navy);
+      font-size: 30px;
+      background: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .av-opt.selected {
+      background: var(--gold);
+      transform: scale(1.1);
+    }
+  </style>
 </head>
-<body class="min-h-screen text-slate-800 flex flex-col items-center justify-center p-2 sm:p-4 select-none">
+<body>
+<div id="app">
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
 
-    <!-- Khung ứng dụng chính tối ưu cho màn hình dọc điện thoại -->
-    <div id="app" class="w-full max-w-xl bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border border-white/20 overflow-hidden flex flex-col min-h-[88vh] sm:min-h-[82vh]">
-        
-        <!-- ==================== MÀN HÌNH 1: BẮT ĐẦU & CHỌN NHÂN VẬT ==================== -->
-        <div id="screen-start" class="p-5 sm:p-7 flex-1 flex flex-col justify-between pop-in">
-            <div>
-                <!-- Banner cốt truyện -->
-                <div class="bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 rounded-2xl p-4 sm:p-5 text-white shadow-lg mb-5 relative overflow-hidden">
-                    <div class="relative z-10">
-                        <span class="inline-block bg-amber-400 text-slate-900 text-xs font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider mb-2">
-                            Toán 7 • Kết Nối Tri Thức
-                        </span>
-                        <h1 class="text-2xl sm:text-3xl font-extrabold leading-tight">
-                            Giải Cứu Vương Quốc Số Hữu Tỉ
-                        </h1>
-                        <p class="text-blue-100 text-sm sm:text-base mt-2 leading-relaxed">
-                            Chúa tể Hỗn Loạn đã phong ấn 5 Viên Ngọc Phép Tính! Hãy hóa thân thành anh hùng, vượt qua 5 vùng đất (40 thử thách) để khôi phục trật tự cho vương quốc.
-                        </p>
-                    </div>
-                    <div class="absolute -right-4 -bottom-4 text-7xl opacity-20 pointer-events-none">🏰</div>
-                </div>
+  <!-- ==================== SCREEN 1: HOME ==================== -->
+  <section id="screen-home" class="screen home-wrap active">
+    <svg class="q-logo" viewBox="0 0 100 100">
+      <circle cx="48" cy="46" r="32" fill="#ffffff" stroke="#231f42" stroke-width="6"/>
+      <ellipse cx="48" cy="46" rx="18" ry="26" fill="#bae6fd" stroke="#231f42" stroke-width="5"/>
+      <line x1="48" y1="16" x2="48" y2="76" stroke="#231f42" stroke-width="5"/>
+      <path d="M62 66 L82 84 L72 90 L54 72 Z" fill="#ffffff" stroke="#231f42" stroke-width="5" stroke-linejoin="round"/>
+    </svg>
 
-                <!-- Nhập thông tin học sinh -->
-                <div class="space-y-3 mb-5">
-                    <div>
-                        <label for="student-name" class="block text-sm font-bold text-slate-700 mb-1">
-                            Họ và tên chiến binh (Học sinh) <span class="text-rose-500">*</span>
-                        </label>
-                        <input type="text" id="student-name" placeholder="Ví dụ: Nguyễn Văn An"
-                            class="w-full px-4 py-3 text-base rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none bg-slate-50 font-medium transition">
-                    </div>
-                    <div>
-                        <label for="student-class" class="block text-sm font-bold text-slate-700 mb-1">
-                            Lớp <span class="text-rose-500">*</span>
-                        </label>
-                        <input type="text" id="student-class" placeholder="Ví dụ: 7A1"
-                            class="w-full px-4 py-3 text-base rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none bg-slate-50 font-medium transition">
-                    </div>
-                </div>
+    <h1 class="game-title">Vương Quốc<span>Hữu Tỉ</span></h1>
+    <div class="subtitle">Hành trình của Hiệp sĩ Toán học • Toán 7</div>
 
-                <!-- Chọn nhân vật -->
-                <div class="mb-4">
-                    <label class="block text-sm font-bold text-slate-700 mb-2">
-                        Chọn nhân vật đồng hành:
-                    </label>
-                    <div class="grid grid-cols-3 gap-2.5" id="hero-selector">
-                        <button type="button" onclick="selectHero(0)" id="hero-card-0"
-                            class="hero-card border-2 border-blue-600 bg-blue-50 rounded-2xl p-3 text-center transition shadow-sm">
-                            <div class="text-3xl sm:text-4xl mb-1 float-hero">🛡️</div>
-                            <div class="font-bold text-xs sm:text-sm text-blue-900 leading-tight">Hiệp Sĩ Số Học</div>
-                            <div class="text-[11px] text-blue-600 mt-0.5">Chính xác</div>
-                        </button>
-                        <button type="button" onclick="selectHero(1)" id="hero-card-1"
-                            class="hero-card border-2 border-slate-200 bg-white hover:bg-slate-50 rounded-2xl p-3 text-center transition">
-                            <div class="text-3xl sm:text-4xl mb-1">🧙‍♂️</div>
-                            <div class="font-bold text-xs sm:text-sm text-slate-800 leading-tight">Pháp Sư Phân Số</div>
-                            <div class="text-[11px] text-slate-500 mt-0.5">Nhanh nhạy</div>
-                        </button>
-                        <button type="button" onclick="selectHero(2)" id="hero-card-2"
-                            class="hero-card border-2 border-slate-200 bg-white hover:bg-slate-50 rounded-2xl p-3 text-center transition">
-                            <div class="text-3xl sm:text-4xl mb-1">🧭</div>
-                            <div class="font-bold text-xs sm:text-sm text-slate-800 leading-tight">Thám Hiểm Lũy Thừa</div>
-                            <div class="text-[11px] text-slate-500 mt-0.5">Bản lĩnh</div>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Thông báo lỗi nhập liệu -->
-                <div id="start-error" class="hidden bg-rose-50 border border-rose-300 text-rose-700 px-4 py-2.5 rounded-xl text-sm font-semibold mb-3">
-                    ⚠️ Em hãy nhập đầy đủ Họ tên và Lớp trước khi xuất phát nhé!
-                </div>
-            </div>
-
-            <button onclick="startGame()"
-                class="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-[0.99] text-white font-extrabold text-lg rounded-2xl shadow-lg shadow-orange-500/30 transition flex items-center justify-center gap-2">
-                <span>BẮT ĐẦU HÀNH TRÌNH</span>
-                <span class="text-xl">⚔️</span>
-            </button>
-        </div>
-
-        <!-- ==================== MÀN HÌNH 2: CHƠI GAME & GIẢI ĐỐ ==================== -->
-        <div id="screen-game" class="hidden flex-1 flex flex-col justify-between">
-            <!-- Thanh trạng thái trên cùng -->
-            <div class="bg-slate-900 text-white p-4">
-                <div class="flex items-center justify-between gap-2 mb-2.5">
-                    <div class="flex items-center gap-2.5">
-                        <span id="hud-hero-icon" class="text-2xl bg-white/15 p-1.5 rounded-xl">🛡️</span>
-                        <div>
-                            <div id="hud-student-info" class="font-bold text-sm text-amber-300 leading-tight">Nguyễn Văn An - 7A1</div>
-                            <div id="hud-stage-name" class="text-xs text-slate-300">Vùng 1: Thung Lũng So Sánh</div>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-xs text-slate-400">Điểm số</div>
-                        <div id="hud-score" class="font-extrabold text-lg text-emerald-400 leading-none">0 / 40</div>
-                    </div>
-                </div>
-
-                <!-- Thanh tiến độ -->
-                <div class="w-full bg-slate-700 h-2.5 rounded-full overflow-hidden">
-                    <div id="hud-progress-bar" class="bg-gradient-to-r from-emerald-400 to-cyan-400 h-full transition-all duration-300" style="width: 2.5%"></div>
-                </div>
-                <div class="flex justify-between text-[11px] text-slate-400 mt-1.5 font-medium">
-                    <span id="hud-q-counter">Câu 1 / 40 (Mức độ: Dễ)</span>
-                    <span id="hud-badges-count">🏅 Huy hiệu: 0/5</span>
-                </div>
-            </div>
-
-            <!-- Khu vực câu hỏi & đáp án -->
-            <div class="p-4 sm:p-6 flex-1 overflow-y-auto space-y-4">
-                <!-- Thẻ câu hỏi -->
-                <div class="bg-blue-50/80 border-2 border-blue-200 rounded-2xl p-4 sm:p-5 shadow-sm">
-                    <div class="flex items-center justify-between mb-2">
-                        <span id="q-topic-badge" class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-blue-600 text-white">
-                            So sánh số hữu tỉ
-                        </span>
-                        <span id="q-level-badge" class="text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800">
-                            Dễ
-                        </span>
-                    </div>
-                    <div id="q-text" class="text-lg sm:text-xl font-bold text-slate-900 leading-relaxed mt-2">
-                        <!-- Nội dung câu hỏi -->
-                    </div>
-                </div>
-
-                <!-- Danh sách 4 lựa chọn -->
-                <div id="options-container" class="grid grid-cols-1 gap-3">
-                    <!-- Các nút đáp án được sinh bằng JS -->
-                </div>
-
-                <!-- Khung Lời giải từng bước & Lỗi sai thường gặp (hiện sau khi chọn) -->
-                <div id="feedback-box" class="hidden rounded-2xl p-4 sm:p-5 border-2 space-y-3 pop-in">
-                    <div id="feedback-header" class="flex items-center gap-2 font-extrabold text-lg">
-                        <!-- Đúng hoặc Sai -->
-                    </div>
-                    
-                    <div class="bg-white/90 rounded-xl p-3.5 border border-slate-200 text-slate-800 text-base leading-relaxed">
-                        <div class="font-bold text-blue-700 mb-1 flex items-center gap-1.5">
-                            <span>📖</span> <span>Lời giải từng bước:</span>
-                        </div>
-                        <div id="feedback-solution" class="space-y-1"></div>
-                    </div>
-
-                    <div id="feedback-mistake-box" class="hidden bg-amber-50 rounded-xl p-3.5 border border-amber-300 text-amber-950 text-sm sm:text-base leading-relaxed">
-                        <div class="font-bold text-amber-800 mb-1 flex items-center gap-1.5">
-                            <span>⚠️</span> <span>Lỗi sai thường gặp cần tránh:</span>
-                        </div>
-                        <div id="feedback-mistake"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Nút điều hướng dưới cùng -->
-            <div id="game-footer" class="hidden p-4 bg-slate-50 border-t border-slate-200">
-                <button id="btn-next" onclick="nextQuestion()"
-                    class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-extrabold text-lg rounded-2xl shadow-md transition flex items-center justify-center gap-2">
-                    <span>CÂU TIẾP THEO</span>
-                    <span>➡️</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- ==================== MÀN HÌNH CHUYỂN VÙNG & NHẬN HUY HIỆU ==================== -->
-        <div id="screen-stage-clear" class="hidden p-6 flex-1 flex flex-col items-center justify-center text-center pop-in">
-            <div class="w-24 h-24 rounded-full bg-amber-100 border-4 border-amber-400 flex items-center justify-center text-5xl shadow-lg mb-4 float-hero" id="stage-badge-icon">
-                🦅
-            </div>
-            <span class="text-xs font-extrabold uppercase tracking-widest text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200 mb-2">
-                Chinh Phục Thành Công!
-            </span>
-            <h2 id="stage-clear-title" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">
-                Hoàn thành Vùng 1!
-            </h2>
-            <p id="stage-clear-desc" class="text-slate-600 text-base mb-5 max-w-md leading-relaxed">
-                Em đã nhận được <strong>Huy hiệu Mắt Đại Bàng</strong> và giải phong ấn viên ngọc đầu tiên!
-            </p>
-            <div class="bg-slate-100 rounded-2xl p-4 w-full max-w-sm mb-6 border border-slate-200">
-                <div class="text-sm text-slate-500">Thành tích vùng này</div>
-                <div id="stage-clear-score" class="text-2xl font-extrabold text-blue-600 mt-1">8 / 8 câu đúng</div>
-            </div>
-            <button onclick="continueNextStage()"
-                class="w-full max-w-sm py-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold text-lg rounded-2xl shadow-lg transition">
-                TIẾN VÀO VÙNG TIẾP THEO 🚀
-            </button>
-        </div>
-
-        <!-- ==================== MÀN HÌNH 3: TỔNG KẾT & GỬI KẾT QUẢ ==================== -->
-        <div id="screen-result" class="hidden p-5 sm:p-7 flex-1 flex flex-col justify-between overflow-y-auto pop-in">
-            <div class="text-center">
-                <div id="final-rank-icon" class="text-6xl mb-2 float-hero">👑</div>
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">
-                    Hoàn Thành Hành Trình!
-                </h2>
-                <p id="final-student-label" class="text-blue-700 font-bold text-base mt-1">
-                    Chiến binh: Nguyễn Văn An • Lớp 7A1
-                </p>
-
-                <!-- Bảng điểm tổng -->
-                <div class="my-4 bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-3xl p-5 shadow-lg">
-                    <div class="text-sm uppercase tracking-wider text-blue-200 font-semibold">Tổng kết quả đạt được</div>
-                    <div id="final-score-big" class="text-4xl sm:text-5xl font-extrabold my-1">36 / 40</div>
-                    <div id="final-grade-10" class="inline-block bg-amber-400 text-slate-900 font-extrabold px-3.5 py-1 rounded-full text-sm mt-1">
-                        Điểm hệ 10: 9.0 điểm
-                    </div>
-                    <div id="final-rank-title" class="text-blue-100 text-sm mt-2 font-medium">
-                        Danh hiệu: Đại Hiệp Sĩ Số Hữu Tỉ
-                    </div>
-                </div>
-
-                <!-- Trạng thái gửi điểm về Google Sheets -->
-                <div id="submit-status-box" class="rounded-2xl p-3.5 mb-4 border text-sm font-semibold flex items-center justify-center gap-2 bg-blue-50 border-blue-200 text-blue-800">
-                    <span class="animate-spin">⏳</span>
-                    <span id="submit-status-text">Đang gửi kết quả về bảng điểm của Thầy/Cô...</span>
-                </div>
-
-                <!-- Bộ sưu tập huy hiệu đạt được -->
-                <div class="text-left mb-4">
-                    <h3 class="text-sm font-extrabold text-slate-700 uppercase tracking-wider mb-2">
-                        🏅 Bộ sưu tập Huy hiệu đạt được:
-                    </h3>
-                    <div id="final-badges-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <!-- Danh sách huy hiệu -->
-                    </div>
-                </div>
-
-                <!-- Thống kê từng vùng -->
-                <div class="text-left bg-slate-50 rounded-2xl p-4 border border-slate-200 mb-5">
-                    <h3 class="text-sm font-extrabold text-slate-700 uppercase tracking-wider mb-2">
-                        📊 Chi tiết 5 vùng đất:
-                    </h3>
-                    <div id="final-breakdown" class="space-y-2 text-sm">
-                        <!-- Chi tiết từng dạng -->
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <button onclick="submitResultsToSheet(true)"
-                    class="py-3.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-base rounded-2xl shadow transition flex items-center justify-center gap-2">
-                    <span>📤</span>
-                    <span>Gửi lại kết quả</span>
-                </button>
-                <button onclick="location.reload()"
-                    class="py-3.5 px-4 bg-slate-800 hover:bg-slate-900 text-white font-bold text-base rounded-2xl shadow transition flex items-center justify-center gap-2">
-                    <span>🔄</span>
-                    <span>Chơi lại từ đầu</span>
-                </button>
-            </div>
-        </div>
-
+    <div class="teacher-card">
+      <div>Giáo viên: <span id="disp-teacher">Trần Thị Thu Chẳng</span></div>
+      <div id="disp-school">Trường THCS Nam Đàn</div>
     </div>
 
-    <!-- ==================== MÃ NGUỒN JAVASCRIPT & NGÂN HÀNG 40 CÂU HỎI ==================== -->
-    <script>
-        // URL Google Apps Script của Thầy/Cô
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby_8k2ZQB4GcG7qdanf8OuCKHH_tN9i4iXo6DH4KvlQQ9R5uXku0fw3itsvauc15-Yx/exec";
+    <div class="lands-preview">
+      <span>🏡</span><span>🏰</span><span>🌲</span><span>⛰️</span><span>🏯</span>
+    </div>
 
-        // Hàm hỗ trợ tạo HTML phân số đẹp mắt
-        function f(tu, mau) {
-            return `<span class="frac"><span>${tu}</span><span>${mau}</span></span>`;
-        }
-        // Hàm hỗ trợ tạo hỗn số
-        function m(nguyen, tu, mau) {
-            return `<span class="mixed"><span>${nguyen}</span>${f(tu, mau)}</span>`;
-        }
+    <button id="btn-continue" class="btn btn-gold" style="display:none;" onclick="continueGame()">
+      ▶ Chơi tiếp: <span id="cont-name">Minh</span>
+    </button>
 
-        // Danh sách nhân vật
-        const HEROES = [
-            { name: "Hiệp Sĩ Số Học", icon: "🛡️" },
-            { name: "Pháp Sư Phân Số", icon: "🧙‍♂️" },
-            { name: "Thám Hiểm Lũy Thừa", icon: "🧭" }
-        ];
+    <button class="btn" onclick="openNewCharModal()">
+      Tạo nhân vật mới
+    </button>
 
-        // Thông tin 5 Vùng đất (5 Dạng bài)
-        const STAGES = [
-            {
-                id: 1,
-                name: "Vùng 1: Thung Lũng So Sánh",
-                topic: "So sánh số hữu tỉ",
-                badgeName: "Huy hiệu Mắt Đại Bàng",
-                badgeIcon: "🦅",
-                story: "Vượt qua sương mù của Thung Lũng So Sánh, em đã phân định rõ lớn bé giữa các số hữu tỉ!"
-            },
-            {
-                id: 2,
-                name: "Vùng 2: Rừng Rậm Bốn Phép Tính",
-                topic: "Cộng, trừ, nhân, chia số hữu tỉ",
-                badgeName: "Huy hiệu Bậc Thầy Tính Toán",
-                badgeIcon: "⚡",
-                story: "Băng qua Rừng Rậm Bốn Phép Tính, mọi phép cộng trừ nhân chia phân số đều không thể làm khó em!"
-            },
-            {
-                id: 3,
-                name: "Vùng 3: Hang Động Dấu Ngoặc",
-                topic: "Quy tắc dấu ngoặc",
-                badgeName: "Huy hiệu Phá Ngoặc Thần Tốc",
-                badgeIcon: "🗝️",
-                story: "Trong Hang Động Dấu Ngoặc tối tăm, em đã dùng chìa khóa đổi dấu chính xác để mở lối thoát!"
-            },
-            {
-                id: 4,
-                name: "Vùng 4: Đỉnh Núi Thứ Tự",
-                topic: "Thứ tự thực hiện phép tính",
-                badgeName: "Huy hiệu Kỷ Luật Thép",
-                badgeIcon: "🏔️",
-                story: "Chinh phục Đỉnh Núi Thứ Tự đòi hỏi tuân thủ nghiêm ngặt quy tắc Lũy thừa – Nhân chia – Cộng trừ!"
-            },
-            {
-                id: 5,
-                name: "Vùng 5: Lâu Đài Tìm X",
-                topic: "Quy tắc chuyển vế tìm x",
-                badgeName: "Huy hiệu Thợ Săn Ẩn Số",
-                badgeIcon: "🏆",
-                story: "Đánh bại Chúa tể Hỗn Loạn tại Lâu Đài Tìm X, em đã giải cứu thành công Vương Quốc Số Hữu Tỉ!"
-            }
-        ];
+    <div class="audio-controls">
+      <button id="btn-sfx" class="btn btn-sm" onclick="toggleSfx()">🔊 Âm thanh: bật</button>
+      <button id="btn-bgm" class="btn btn-sm" onclick="toggleBgm()">🎵 Nhạc nền: tắt</button>
+    </div>
 
-        // Ngân hàng 40 câu hỏi Toán 7 (Kết nối tri thức - Hết Bài 4, không chứa căn bậc hai/số vô tỉ)
-        // Mỗi dạng 8 câu từ Dễ -> Trung bình -> Khó
-        const QUESTIONS = [
-            // ================= DẠNG 1: SO SÁNH SỐ HỮU TỈ (Câu 1 - 8) =================
-            {
-                stage: 0, level: "Dễ",
-                q: `So sánh hai số hữu tỉ x = ${f("-3", "5")} và y = ${f("-2", "5")}:`,
-                options: ["x > y", "x < y", "x = y", "Không so sánh được"],
-                correct: 1,
-                solution: `Hai phân số có cùng mẫu dương là 5.<br>Vì tử số -3 < -2 nên ${f("-3", "5")} < ${f("-2", "5")}, tức là <b>x < y</b>.`,
-                mistake: `Quên xét dấu âm nên nhầm 3 > 2 dẫn đến chọn nhầm ${f("-3", "5")} > ${f("-2", "5")}. Với hai số âm, số nào có phần số tự nhiên lớn hơn thì nhỏ hơn.`
-            },
-            {
-                stage: 0, level: "Dễ",
-                q: `Số hữu tỉ nào lớn hơn trong hai số ${f("3", "4")} và ${f("5", "6")}?`,
-                options: [`${f("3", "4")}`, `${f("5", "6")}`, "Hai số bằng nhau", "Không xác định"],
-                correct: 1,
-                solution: `Quy đồng mẫu số chung là 12:<br>${f("3", "4")} = ${f("9", "12")}; &nbsp; ${f("5", "6")} = ${f("10", "12")}.<br>Vì 9 < 10 nên ${f("9", "12")} < ${f("10", "12")}. Vậy <b>${f("5", "6")}</b> lớn hơn.`,
-                mistake: `So sánh trực tiếp tử với tử, mẫu với mẫu mà chưa quy đồng về cùng mẫu dương.`
-            },
-            {
-                stage: 0, level: "Trung bình",
-                q: `Sắp xếp các số sau theo thứ tự tăng dần: &nbsp; -1,5 ; &nbsp; ${f("-4", "3")} ; &nbsp; 0 ; &nbsp; ${f("2", "3")}`,
-                options: [
-                    `-1,5 ; &nbsp; ${f("-4", "3")} ; &nbsp; 0 ; &nbsp; ${f("2", "3")}`,
-                    `${f("-4", "3")} ; &nbsp; -1,5 ; &nbsp; 0 ; &nbsp; ${f("2", "3")}`,
-                    `0 ; &nbsp; ${f("2", "3")} ; &nbsp; ${f("-4", "3")} ; &nbsp; -1,5`,
-                    `${f("2", "3")} ; &nbsp; 0 ; &nbsp; ${f("-4", "3")} ; &nbsp; -1,5`
-                ],
-                correct: 0,
-                solution: `Đổi ra cùng mẫu số 6: -1,5 = ${f("-3", "2")} = ${f("-9", "6")}; &nbsp; ${f("-4", "3")} = ${f("-8", "6")}.<br>Vì -9 < -8 < 0 < 4 nên -1,5 < ${f("-4", "3")} < 0 < ${f("2", "3")}.`,
-                mistake: `Đổi -1,5 = -1,50 và nghĩ -1,5 > -1,33... (-4/3). Trên trục số nằm ngang, điểm -1,5 nằm bên trái điểm -4/3.`
-            },
-            {
-                stage: 0, level: "Trung bình",
-                q: `Có bao nhiêu số nguyên x thỏa mãn &nbsp; ${f("-7", "3")} < x < ${f("-1", "2")} ?`,
-                options: ["1 số", "2 số", "3 số", "4 số"],
-                correct: 1,
-                solution: `Ta có ${f("-7", "3")} = -${m("2", "1", "3")} và ${f("-1", "2")} = -0,5.<br>Các số nguyên x nằm giữa -${m("2", "1", "3")} và -0,5 là <b>x = -2</b> và <b>x = -1</b> (có 2 số).`,
-                mistake: `Lấy nhầm cả số -3 (vì -3 nhỏ hơn -7/3 chứ không lớn hơn) hoặc lấy nhầm số 0.`
-            },
-            {
-                stage: 0, level: "Trung bình",
-                q: `So sánh hai số hữu tỉ A = ${f("-22", "35")} và B = ${f("-10", "17")}:`,
-                options: ["A > B", "A < B", "A = B", "Không so sánh được"],
-                correct: 1,
-                solution: `Quy đồng mẫu số chung 35 × 17 = 595:<br>A = ${f("-22 × 17", "595")} = ${f("-374", "595")}; &nbsp; B = ${f("-10 × 35", "595")} = ${f("-350", "595")}.<br>Vì -374 < -350 nên <b>A < B</b>.`,
-                mistake: `Nhân chéo để so sánh nhưng quên mang dấu trừ theo tử số dẫn đến đảo ngược chiều bất đẳng thức.`
-            },
-            {
-                stage: 0, level: "Khó",
-                q: `So sánh x = ${f("-9", "11")} và y = ${f("-11", "13")}:`,
-                options: ["x > y", "x < y", "x = y", "Không so sánh được"],
-                correct: 0,
-                solution: `Xét hai số đối dương: ${f("9", "11")} = 1 - ${f("2", "11")} và ${f("11", "13")} = 1 - ${f("2", "13")}.<br>Vì ${f("2", "11")} > ${f("2", "13")} nên ${f("9", "11")} < ${f("11", "13")}.<br>Thêm dấu trừ đổi chiều bất đẳng thức: ${f("-9", "11")} > ${f("-11", "13")}, vậy <b>x > y</b>.`,
-                mistake: `Dùng phần bù nhưng quên đổi chiều khi chuyển từ số dương sang số âm.`
-            },
-            {
-                stage: 0, level: "Khó",
-                q: `Tìm tất cả các số nguyên x sao cho &nbsp; ${f("-5", "6")} < ${f("x", "12")} < ${f("-1", "4")}:`,
-                options: [
-                    "x ∈ {-9; -8; -7; -6; -5; -4}",
-                    "x ∈ {-10; -9; -8; -7; -6; -5; -4; -3}",
-                    "x ∈ {-9; -8; -7; -6; -5}",
-                    "x ∈ {-8; -7; -6; -5}"
-                ],
-                correct: 0,
-                solution: `Quy đồng mẫu chung 12: &nbsp; ${f("-10", "12")} < ${f("x", "12")} < ${f("-3", "12")}.<br>Suy ra -10 < x < -3. Vì x ∈ ℤ nên <b>x ∈ {-9; -8; -7; -6; -5; -4}</b>.`,
-                mistake: `Lấy cả hai đầu mút -10 và -3 mặc dù đề bài dùng dấu bé hơn (<) chứ không có dấu bằng (≤).`
-            },
-            {
-                stage: 0, level: "Khó",
-                q: `Cho a, b ∈ ℤ, b > 0 và a < b. So sánh ${f("a", "b")} và ${f("a + 2026", "b + 2026")}:`,
-                options: [
-                    `${f("a", "b")} < ${f("a + 2026", "b + 2026")}`,
-                    `${f("a", "b")} > ${f("a + 2026", "b + 2026")}`,
-                    `${f("a", "b")} = ${f("a + 2026", "b + 2026")}`,
-                    "Tùy thuộc vào a âm hay dương"
-                ],
-                correct: 0,
-                solution: `Ta có: 1 - ${f("a", "b")} = ${f("b - a", "b")} và 1 - ${f("a + 2026", "b + 2026")} = ${f("b - a", "b + 2026")}.<br>Vì a < b nên b - a > 0. Mà 0 < b < b + 2026 nên ${f("b - a", "b")} > ${f("b - a", "b + 2026")}.<br>Suy ra <b>${f("a", "b")} < ${f("a + 2026", "b + 2026")}</b>.`,
-                mistake: `Ngộ nhận rằng cộng cả tử và mẫu của một phân số với cùng một số thì giá trị phân số không đổi.`
-            },
+    <button class="teacher-link" onclick="openTeacherModal()">Dành cho giáo viên →</button>
+  </section>
 
-            // ================= DẠNG 2: CỘNG, TRỪ, NHÂN, CHIA SỐ HỮU TỈ (Câu 9 - 16) =================
-            {
-                stage: 1, level: "Dễ",
-                q: `Tính: &nbsp; ${f("-3", "4")} + ${f("1", "4")}`,
-                options: [`${f("-1", "2")}`, `${f("-1", "4")}`, `${f("1", "2")}`, "-1"],
-                correct: 0,
-                solution: `Cộng hai phân số cùng mẫu: &nbsp; ${f("-3 + 1", "4")} = ${f("-2", "4")} = <b>${f("-1", "2")}</b>.`,
-                mistake: `Lấy tử cộng tử và mẫu cộng mẫu ra ${f("-2", "8")} = ${f("-1", "4")}.`
-            },
-            {
-                stage: 1, level: "Dễ",
-                q: `Tính: &nbsp; ${f("2", "3")} - (${f("-1", "3")})`,
-                options: ["1", `${f("1", "3")}`, `${f("-1", "3")}`, "-1"],
-                correct: 0,
-                solution: `Trừ một số âm bằng cộng với số đối của nó:<br>${f("2", "3")} + ${f("1", "3")} = ${f("3", "3")} = <b>1</b>.`,
-                mistake: `Nhầm lẫn dấu trừ thành ${f("2", "3")} - ${f("1", "3")} = ${f("1", "3")}.`
-            },
-            {
-                stage: 1, level: "Dễ",
-                q: `Tính: &nbsp; ${f("-2", "3")} · ${f("3", "5")}`,
-                options: [`${f("-2", "5")}`, `${f("2", "5")}`, `${f("-6", "8")}`, `${f("-10", "9")}`],
-                correct: 0,
-                solution: `Nhân tử với tử, mẫu với mẫu và rút gọn số 3:<br>${f("-2 · 3", "3 · 5")} = <b>${f("-2", "5")}</b>.`,
-                mistake: `Đi quy đồng mẫu số khi thực hiện phép nhân phân số hoặc quên dấu âm.`
-            },
-            {
-                stage: 1, level: "Trung bình",
-                q: `Tính: &nbsp; ${f("-4", "7")} : (${f("8", "-21")})`,
-                options: [`${f("3", "2")}`, `${f("-3", "2")}`, `${f("32", "147")}`, `${f("-32", "147")}`],
-                correct: 0,
-                solution: `Nhân với phân số nghịch đảo:<br>${f("-4", "7")} · ${f("-21", "8")} = ${f("(-4) · (-21)", "7 · 8")} = ${f("84", "56")} = <b>${f("3", "2")}</b>.`,
-                mistake: `Quên nghịch đảo phân số chia hoặc tính sai tích hai số âm (âm nhân âm phải ra dương).`
-            },
-            {
-                stage: 1, level: "Trung bình",
-                q: `Tính: &nbsp; -${m("1", "1", "2")} + ${f("5", "6")}`,
-                options: [`${f("-2", "3")}`, `${f("2", "3")}`, `${f("-4", "3")}`, `${f("1", "3")}`],
-                correct: 0,
-                solution: `Đổi hỗn số: -${m("1", "1", "2")} = ${f("-3", "2")} = ${f("-9", "6")}.<br>Thực hiện cộng: ${f("-9", "6")} + ${f("5", "6")} = ${f("-4", "6")} = <b>${f("-2", "3")}</b>.`,
-                mistake: `Đổi sai hỗn số âm: viết -1${f("1", "2")} thành ${f("-1·2 + 1", "2")} = ${f("-1", "2")} (quên đặt dấu trừ trước cả hỗn số).`
-            },
-            {
-                stage: 1, level: "Trung bình",
-                q: `Tính: &nbsp; (${f("-3", "4")}) · ${m("1", "1", "3")} - ${f("5", "6")}`,
-                options: [`${f("-11", "6")}`, `${f("-1", "6")}`, "-1", `${f("1", "6")}`],
-                correct: 0,
-                solution: `Đổi ${m("1", "1", "3")} = ${f("4", "3")}. Thực hiện phép nhân trước:<br>(${f("-3", "4")}) · ${f("4", "3")} - ${f("5", "6")} = -1 - ${f("5", "6")} = ${f("-6", "6")} - ${f("5", "6")} = <b>${f("-11", "6")}</b>.`,
-                mistake: `Tính -1 - ${f("5", "6")} nhầm dấu thành -${f("1", "6")}.`
-            },
-            {
-                stage: 1, level: "Khó",
-                q: `Tính giá trị biểu thức: &nbsp; A = (${f("1", "2")} - 1)(${f("1", "3")} - 1)(${f("1", "4")} - 1)(${f("1", "5")} - 1)`,
-                options: [`${f("1", "5")}`, `${f("-1", "5")}`, "-1", `${f("1", "120")}`],
-                correct: 0,
-                solution: `Thu gọn từng ngoặc:<br>A = (${f("-1", "2")}) · (${f("-2", "3")}) · (${f("-3", "4")}) · (${f("-4", "5")}).<br>Có 4 thừa số âm (số chẵn) nên tích mang dấu dương. Rút gọn chéo tử và mẫu ta được <b>${f("1", "5")}</b>.`,
-                mistake: `Xác định nhầm dấu của tích (4 dấu trừ nhân nhau phải ra dấu cộng).`
-            },
-            {
-                stage: 1, level: "Khó",
-                q: `Tính tổng: &nbsp; S = ${f("1", "1·2")} + ${f("1", "2·3")} + ${f("1", "3·4")} + ... + ${f("1", "9·10")}`,
-                options: [`${f("9", "10")}`, "1", `${f("1", "10")}`, `${f("9", "11")}`],
-                correct: 0,
-                solution: `Áp dụng công thức ${f("1", "n(n+1)")} = ${f("1", "n")} - ${f("1", "n+1")}:<br>S = (1 - ${f("1", "2")}) + (${f("1", "2")} - ${f("1", "3")}) + ... + (${f("1", "9")} - ${f("1", "10")})<br>S = 1 - ${f("1", "10")} = <b>${f("9", "10")}</b>.`,
-                mistake: `Không biết tách phân số thành hiệu hai phân số nên cộng sai quy luật.`
-            },
+  <!-- ==================== SCREEN 2: MAIN HUB (MAP / SHOP / BADGES / PROFILE) ==================== -->
+  <section id="screen-hub" class="screen" style="padding:0;">
+    <!-- HUD -->
+    <div class="hud">
+      <div class="hud-left">
+        <div class="avatar-circle" id="hud-avatar">🐶</div>
+        <div class="hud-info">
+          <div class="hud-name-row">
+            <span id="hud-name">Minh</span>
+            <span class="hud-lvl" id="hud-lvl">Cấp 1</span>
+          </div>
+          <div class="xp-bar"><div class="xp-fill" id="hud-xp-fill"></div></div>
+          <div class="xp-text" id="hud-xp-text">0/100 XP</div>
+        </div>
+      </div>
+      <div class="coin-pill">🪙 <span id="hud-coins">50</span></div>
+      <button class="icon-btn" id="hud-sound-btn" onclick="toggleSfx()">🔊</button>
+    </div>
 
-            // ================= DẠNG 3: QUY TẮC DẤU NGOẶC (Câu 17 - 24) =================
-            {
-                stage: 2, level: "Dễ",
-                q: `Áp dụng quy tắc dấu ngoặc để phá ngoặc biểu thức: &nbsp; -(x - 3 + y)`,
-                options: ["-x + 3 - y", "-x - 3 + y", "-x - 3 - y", "x - 3 + y"],
-                correct: 0,
-                solution: `Trước dấu ngoặc là dấu "-", khi bỏ ngoặc ta đổi dấu tất cả các số hạng bên trong:<br>x thành -x; &nbsp; -3 thành +3; &nbsp; +y thành -y.<br>Kết quả: <b>-x + 3 - y</b>.`,
-                mistake: `Chỉ đổi dấu số hạng đầu tiên là x mà quên đổi dấu các số hạng phía sau (-3 và +y).`
-            },
-            {
-                stage: 2, level: "Dễ",
-                q: `Bỏ dấu ngoặc và rút gọn biểu thức: &nbsp; 5 + (x - 2)`,
-                options: ["x + 3", "x + 7", "x - 3", "7 - x"],
-                correct: 0,
-                solution: `Trước dấu ngoặc là dấu "+", giữ nguyên dấu các số hạng trong ngoặc:<br>5 + x - 2 = x + (5 - 2) = <b>x + 3</b>.`,
-                mistake: `Tự ý đổi dấu bên trong ngoặc mặc dù đằng trước là dấu cộng.`
-            },
-            {
-                stage: 2, level: "Trung bình",
-                q: `Tính hợp lí bằng cách bỏ dấu ngoặc: &nbsp; ${f("3", "7")} - (${f("3", "7")} - ${f("4", "5")})`,
-                options: [`${f("4", "5")}`, `${f("-4", "5")}`, `${f("6", "7")}`, "0"],
-                correct: 0,
-                solution: `Bỏ dấu ngoặc có dấu "-" đằng trước:<br>${f("3", "7")} - ${f("3", "7")} + ${f("4", "5")} = 0 + ${f("4", "5")} = <b>${f("4", "5")}</b>.`,
-                mistake: `Phá ngoặc nhưng quên đổi dấu -${f("4", "5")} thành +${f("4", "5")}.`
-            },
-            {
-                stage: 2, level: "Trung bình",
-                q: `Rút gọn biểu thức: &nbsp; A = -(a - b) + (-a + b)`,
-                options: ["-2a + 2b", "0", "-2a", "2b"],
-                correct: 0,
-                solution: `Phá từng ngoặc:<br>A = -a + b - a + b = (-a - a) + (b + b) = <b>-2a + 2b</b>.`,
-                mistake: `Nhầm -a - a = 0 (hai số giống dấu cộng lại phải là -2a, không phải hai số đối nhau).`
-            },
-            {
-                stage: 2, level: "Trung bình",
-                q: `Tính hợp lí: &nbsp; -(${f("5", "11")} + ${f("3", "8")}) + (-${f("6", "11")} + ${f("5", "8")})`,
-                options: [`${f("-3", "4")}`, "-1", `${f("1", "4")}`, `${f("-5", "4")}`],
-                correct: 0,
-                solution: `Bỏ ngoặc và nhóm các phân số cùng mẫu:<br>= -${f("5", "11")} - ${f("3", "8")} - ${f("6", "11")} + ${f("5", "8")}<br>= (-${f("5", "11")} - ${f("6", "11")}) + (-${f("3", "8")} + ${f("5", "8")}) = -1 + ${f("2", "8")} = -1 + ${f("1", "4")} = <b>${f("-3", "4")}</b>.`,
-                mistake: `Quên đổi dấu +${f("3", "8")} thành -${f("3", "8")} khi phá ngoặc đầu tiên.`
-            },
-            {
-                stage: 2, level: "Khó",
-                q: `Tính giá trị biểu thức: &nbsp; ${f("1", "3")} - [ ${f("4", "3")} - (-${f("2", "3")} + ${f("5", "6")}) ]`,
-                options: [`${f("-5", "6")}`, `${f("-1", "2")}`, `${f("1", "6")}`, `${f("-7", "6")}`],
-                correct: 0,
-                solution: `Phá ngoặc tròn trước:<br>= ${f("1", "3")} - [ ${f("4", "3")} + ${f("2", "3")} - ${f("5", "6")} ]<br>= ${f("1", "3")} - [ 2 - ${f("5", "6")} ] = ${f("1", "3")} - 2 + ${f("5", "6")} = ${f("2 - 12 + 5", "6")} = <b>${f("-5", "6")}</b>.`,
-                mistake: `Đổi dấu nhầm khi phá liên tiếp hai lớp ngoặc có dấu trừ phía trước.`
-            },
-            {
-                stage: 2, level: "Khó",
-                q: `Rút gọn biểu thức: &nbsp; M = -(-x + y - z) - (x - y + z) + (x + y - z)`,
-                options: ["x + y - z", "x - y + z", "-x + y + z", "x + y + z"],
-                correct: 0,
-                solution: `Phá cả 3 ngoặc:<br>M = x - y + z - x + y - z + x + y - z<br>= (x - x + x) + (-y + y + y) + (z - z - z) = <b>x + y - z</b>.`,
-                mistake: `Sai dấu ở ngoặc thứ hai -(x - y + z) khi không đổi -y thành +y.`
-            },
-            {
-                stage: 2, level: "Khó",
-                q: `Tìm x, biết: &nbsp; -(x - ${f("1", "2")}) + ${f("3", "4")} = ${f("-3", "4")}`,
-                options: ["x = 2", "x = -2", "x = 1", `x = ${f("1", "2")}`],
-                correct: 0,
-                solution: `Bỏ dấu ngoặc:<br>-x + ${f("1", "2")} + ${f("3", "4")} = ${f("-3", "4")}<br>-x + ${f("5", "4")} = ${f("-3", "4")} ⇒ -x = ${f("-3", "4")} - ${f("5", "4")} = ${f("-8", "4")} = -2 ⇒ <b>x = 2</b>.`,
-                mistake: `Bỏ ngoặc -(x - ${f("1", "2")}) viết nhầm thành -x - ${f("1", "2")}.`
-            },
+    <!-- TAB 1: BẢN ĐỒ 5 VÙNG ĐẤT -->
+    <div id="tab-map" class="map-container">
+      <!-- Rendered by JS -->
+    </div>
 
-            // ================= DẠNG 4: THỨ TỰ THỰC HIỆN PHÉP TÍNH (Câu 25 - 32) =================
-            {
-                stage: 3, level: "Dễ",
-                q: `Tính giá trị biểu thức: &nbsp; 15 - 3 · 2 + 1`,
-                options: ["10", "25", "16", "8"],
-                correct: 0,
-                solution: `Thực hiện phép nhân trước, cộng trừ từ trái sang phải:<br>15 - 6 + 1 = 9 + 1 = <b>10</b>.`,
-                mistake: `Tính từ trái sang phải làm phép trừ trước: 15 - 3 = 12, rồi 12 · 2 = 24... (sai thứ tự phép tính).`
-            },
-            {
-                stage: 3, level: "Dễ",
-                q: `Tính: &nbsp; ${f("1", "2")} + ${f("3", "2")} · ${f("1", "3")}`,
-                options: ["1", `${f("2", "3")}`, `${f("4", "5")}`, `${f("5", "6")}`],
-                correct: 0,
-                solution: `Thực hiện phép nhân trước:<br>${f("1", "2")} + (${f("3", "2")} · ${f("1", "3")}) = ${f("1", "2")} + ${f("1", "2")} = <b>1</b>.`,
-                mistake: `Cộng ${f("1", "2")} + ${f("3", "2")} = 2 trước rồi mới nhân với ${f("1", "3")}.`
-            },
-            {
-                stage: 3, level: "Trung bình",
-                q: `Tính: &nbsp; (${f("-1", "2")})<sup>3</sup> + ${f("3", "4")} : ${f("1", "2")}`,
-                options: [`${f("11", "8")}`, `${f("13", "8")}`, `${f("-11", "8")}`, `${f("1", "4")}`],
-                correct: 0,
-                solution: `Tính lũy thừa và phép chia trước:<br>(${f("-1", "2")})<sup>3</sup> = ${f("-1", "8")}; &nbsp; ${f("3", "4")} : ${f("1", "2")} = ${f("3", "4")} · 2 = ${f("3", "2")} = ${f("12", "8")}.<br>Cộng lại: ${f("-1", "8")} + ${f("12", "8")} = <b>${f("11", "8")}</b>.`,
-                mistake: `Tính nhầm (${f("-1", "2")})<sup>3</sup> = ${f("-1", "6")} (lấy 2 × 3 thay vì 2<sup>3</sup>) hoặc làm mất dấu trừ.`
-            },
-            {
-                stage: 3, level: "Trung bình",
-                q: `Tính: &nbsp; 2<sup>3</sup> · ${f("1", "4")} - (${f("-1", "2")})<sup>2</sup> + 1,5`,
-                options: [`${f("13", "4")}`, `${f("15", "4")}`, "2,25", "3"],
-                correct: 0,
-                solution: `Tính lũy thừa: 2<sup>3</sup> = 8; &nbsp; (${f("-1", "2")})<sup>2</sup> = ${f("1", "4")}.<br>Thay vào biểu thức: 8 · ${f("1", "4")} - ${f("1", "4")} + ${f("3", "2")} = 2 - ${f("1", "4")} + ${f("6", "4")} = ${f("8 - 1 + 6", "4")} = <b>${f("13", "4")}</b>.`,
-                mistake: `Tính nhầm (${f("-1", "2")})<sup>2</sup> = -${f("1", "4")} (lũy thừa mũ chẵn của số âm phải là số dương).`
-            },
-            {
-                stage: 3, level: "Trung bình",
-                q: `Tính: &nbsp; (${f("3", "4")} - ${f("1", "2")})<sup>2</sup> : ${f("1", "8")} + ${f("3", "2")}`,
-                options: ["2", `${f("7", "2")}`, `${f("5", "2")}`, "3"],
-                correct: 0,
-                solution: `Trong ngoặc trước: ${f("3", "4")} - ${f("2", "4")} = ${f("1", "4")}.<br>Lũy thừa: (${f("1", "4")})<sup>2</sup> = ${f("1", "16")}.<br>Chia rồi cộng: ${f("1", "16")} · 8 + ${f("3", "2")} = ${f("1", "2")} + ${f("3", "2")} = <b>2</b>.`,
-                mistake: `Bình phương sai (${f("1", "4")})<sup>2</sup> = ${f("1", "8")}.`
-            },
-            {
-                stage: 3, level: "Khó",
-                q: `Tính: &nbsp; (${f("-3", "5")})<sup>2</sup> · (${f("5", "3")} - ${f("5", "6")}) - ${f("1", "10")}`,
-                options: [`${f("1", "5")}`, `${f("2", "5")}`, "0", `${f("-1", "5")}`],
-                correct: 0,
-                solution: `Tính lũy thừa và trong ngoặc:<br>(${f("-3", "5")})<sup>2</sup> = ${f("9", "25")}; &nbsp; ${f("5", "3")} - ${f("5", "6")} = ${f("10 - 5", "6")} = ${f("5", "6")}.<br>Nhân rồi trừ: ${f("9", "25")} · ${f("5", "6")} - ${f("1", "10")} = ${f("3", "10")} - ${f("1", "10")} = ${f("2", "10")} = <b>${f("1", "5")}</b>.`,
-                mistake: `Thực hiện phép trừ ${f("5", "6")} - ${f("1", "10")} trước khi nhân với ${f("9", "25")}.`
-            },
-            {
-                stage: 3, level: "Khó",
-                q: `Tính giá trị biểu thức: &nbsp; A = ${f("(-2)<sup>3</sup> · 3<sup>4</sup>", "6<sup>2</sup>")} - (${f("-1", "2")})<sup>3</sup>`,
-                options: [`${f("-143", "8")}`, "-18", "-17", `${f("-145", "8")}`],
-                correct: 0,
-                solution: `Phân tích 6<sup>2</sup> = 2<sup>2</sup> · 3<sup>2</sup>:<br>${f("-8 · 81", "4 · 9")} = (-2) · 9 = -18.<br>Tiếp tục: -18 - (${f("-1", "8")}) = -18 + ${f("1", "8")} = ${f("-144 + 1", "8")} = <b>${f("-143", "8")}</b>.`,
-                mistake: `Tính -18 - (${f("-1", "8")}) nhầm thành -18 - ${f("1", "8")} = ${f("-145", "8")}.`
-            },
-            {
-                stage: 3, level: "Khó",
-                q: `Tính: &nbsp; [ (${f("-1", "3")})<sup>2</sup> + ${f("5", "9")} ] : (-${m("1", "1", "3")}) - (${f("-1", "2")})<sup>3</sup>`,
-                options: [`${f("-3", "8")}`, `${f("-5", "8")}`, `${f("3", "8")}`, `${f("-1", "2")}`],
-                correct: 0,
-                solution: `Trong ngoặc vuông: ${f("1", "9")} + ${f("5", "9")} = ${f("6", "9")} = ${f("2", "3")}.<br>Phép chia: ${f("2", "3")} : (${f("-4", "3")}) = ${f("2", "3")} · (${f("-3", "4")}) = ${f("-1", "2")}.<br>Trừ lũy thừa: ${f("-1", "2")} - (${f("-1", "8")}) = ${f("-4", "8")} + ${f("1", "8")} = <b>${f("-3", "8")}</b>.`,
-                mistake: `Nhầm dấu ở bước cuối cùng hoặc tính sai (${f("-1", "2")})<sup>3</sup> = ${f("1", "8")}.`
-            },
+    <!-- TAB 2: CỬA HÀNG -->
+    <div id="tab-shop" class="tab-page">
+      <h2 style="margin:0; font-size:22px; font-weight:900;">🛒 Cửa Hàng Hiệp Sĩ</h2>
+      <p style="margin:0; font-size:14px; font-weight:700; color:#475569;">Dùng vàng kiếm được qua các ải để trang bị vật phẩm hỗ trợ!</p>
+      <div class="card-box" style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div style="font-weight:900; font-size:17px;">📜 Cuộn Gợi Ý (+1)</div>
+          <div style="font-size:13px; color:#475569;">Mở thêm gợi ý chi tiết từng bước</div>
+        </div>
+        <button class="btn btn-gold btn-sm" onclick="buyItem('hints', 20)">🪙 20</button>
+      </div>
+      <div class="card-box" style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div style="font-weight:900; font-size:17px;">✂️ Kéo 50:50 (+1)</div>
+          <div style="font-size:13px; color:#475569;">Loại bỏ bớt phương án sai</div>
+        </div>
+        <button class="btn btn-gold btn-sm" onclick="buyItem('fifty', 25)">🪙 25</button>
+      </div>
+      <div class="card-box" style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div style="font-weight:900; font-size:17px;">👟 Giày Bỏ Qua (+1)</div>
+          <div style="font-size:13px; color:#475569;">Vượt qua câu khó mà không mất tim</div>
+        </div>
+        <button class="btn btn-gold btn-sm" onclick="buyItem('skip', 35)">🪙 35</button>
+      </div>
+      <div class="card-box" style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div style="font-weight:900; font-size:17px;">🧪 Bình Hồi Máu (+1)</div>
+          <div style="font-size:13px; color:#475569;">Hồi phục 1 trái tim khi đang chiến đấu</div>
+        </div>
+        <button class="btn btn-gold btn-sm" onclick="buyItem('heal', 30)">🪙 30</button>
+      </div>
+    </div>
 
-            // ================= DẠNG 5: QUY TẮC CHUYỂN VẾ TÌM X (Câu 33 - 40) =================
-            {
-                stage: 4, level: "Dễ",
-                q: `Tìm x, biết: &nbsp; x + ${f("1", "3")} = ${f("5", "6")}`,
-                options: [`x = ${f("1", "2")}`, `x = ${f("7", "6")}`, `x = ${f("1", "6")}`, `x = ${f("-1", "2")}`],
-                correct: 0,
-                solution: `Chuyển ${f("1", "3")} từ vế trái sang vế phải và đổi dấu:<br>x = ${f("5", "6")} - ${f("1", "3")} = ${f("5", "6")} - ${f("2", "6")} = ${f("3", "6")} = <b>${f("1", "2")}</b>.`,
-                mistake: `Chuyển vế nhưng quên đổi dấu thành x = ${f("5", "6")} + ${f("1", "3")} = ${f("7", "6")}.`
-            },
-            {
-                stage: 4, level: "Dễ",
-                q: `Tìm x, biết: &nbsp; x - ${f("3", "4")} = ${f("-1", "2")}`,
-                options: [`x = ${f("1", "4")}`, `x = ${f("-5", "4")}`, `x = ${f("5", "4")}`, `x = ${f("-1", "4")}`],
-                correct: 0,
-                solution: `Chuyển -${f("3", "4")} sang vế phải thành +${f("3", "4")}:<br>x = ${f("-1", "2")} + ${f("3", "4")} = ${f("-2", "4")} + ${f("3", "4")} = <b>${f("1", "4")}</b>.`,
-                mistake: `Cộng nhầm số âm: ${f("-2", "4")} + ${f("3", "4")} ra ${f("-5", "4")}.`
-            },
-            {
-                stage: 4, level: "Trung bình",
-                q: `Tìm x, biết: &nbsp; ${f("2", "3")} - x = ${f("1", "6")}`,
-                options: [`x = ${f("1", "2")}`, `x = ${f("-1", "2")}`, `x = ${f("5", "6")}`, `x = ${f("3", "2")}`],
-                correct: 0,
-                solution: `Muốn tìm số trừ x, ta lấy số bị trừ trừ đi hiệu:<br>x = ${f("2", "3")} - ${f("1", "6")} = ${f("4", "6")} - ${f("1", "6")} = ${f("3", "6")} = <b>${f("1", "2")}</b>.`,
-                mistake: `Chuyển vế nhầm thành x = ${f("1", "6")} - ${f("2", "3")} = ${f("-1", "2")} (quên dấu trừ đứng trước x).`
-            },
-            {
-                stage: 4, level: "Trung bình",
-                q: `Tìm x, biết: &nbsp; ${f("-3", "4")}x = ${f("9", "8")}`,
-                options: [`x = ${f("-3", "2")}`, `x = ${f("3", "2")}`, `x = ${f("-27", "32")}`, `x = ${f("-2", "3")}`],
-                correct: 0,
-                solution: `Chia hai vế cho ${f("-3", "4")}:<br>x = ${f("9", "8")} : (${f("-3", "4")}) = ${f("9", "8")} · (${f("-4", "3")}) = <b>${f("-3", "2")}</b>.`,
-                mistake: `Chuyển ${f("-3", "4")} từ phép nhân sang thành phép cộng ${f("9", "8")} + ${f("3", "4")}.`
-            },
-            {
-                stage: 4, level: "Trung bình",
-                q: `Tìm x, biết: &nbsp; ${f("3", "4")} + ${f("1", "4")}x = ${f("-1", "2")}`,
-                options: ["x = -5", "x = 5", "x = -1", `x = ${f("-5", "2")}`],
-                correct: 0,
-                solution: `Chuyển ${f("3", "4")} sang vế phải:<br>${f("1", "4")}x = ${f("-1", "2")} - ${f("3", "4")} = ${f("-2", "4")} - ${f("3", "4")} = ${f("-5", "4")}.<br>Suy ra x = ${f("-5", "4")} : ${f("1", "4")} = <b>-5</b>.`,
-                mistake: `Cộng ${f("3", "4")} + ${f("1", "4")} = 1 trước rồi mới tìm x (sai thứ tự phép tính).`
-            },
-            {
-                stage: 4, level: "Khó",
-                q: `Tìm x, biết: &nbsp; (x - ${f("1", "2")})<sup>2</sup> = ${f("9", "16")}`,
-                options: [
-                    `x = ${f("5", "4")} hoặc x = ${f("-1", "4")}`,
-                    `x = ${f("5", "4")}`,
-                    `x = ${f("11", "8")} hoặc x = ${f("-7", "8")}`,
-                    `x = ${f("3", "4")} hoặc x = ${f("-3", "4")}`
-                ],
-                correct: 0,
-                solution: `Vì (${f("3", "4")})<sup>2</sup> = ${f("9", "16")} và (${f("-3", "4")})<sup>2</sup> = ${f("9", "16")}, nên có 2 trường hợp:<br>• x - ${f("1", "2")} = ${f("3", "4")} ⇒ x = ${f("3", "4")} + ${f("2", "4")} = <b>${f("5", "4")}</b>.<br>• x - ${f("1", "2")} = ${f("-3", "4")} ⇒ x = ${f("-3", "4")} + ${f("2", "4")} = <b>${f("-1", "4")}</b>.`,
-                mistake: `Chỉ giải một trường hợp dương x - ${f("1", "2")} = ${f("3", "4")} mà bỏ sót nghiệm âm.`
-            },
-            {
-                stage: 4, level: "Khó",
-                q: `Tìm x, biết: &nbsp; (x - ${f("1", "2")})<sup>2</sup> = ${f("1", "4")}`,
-                options: [
-                    "x = 1 hoặc x = 0",
-                    "x = 1",
-                    `x = ${f("3", "4")} hoặc x = ${f("1", "4")}`,
-                    "x = -1 hoặc x = 0"
-                ],
-                correct: 0,
-                solution: `Ta có ${f("1", "4")} = (${f("1", "2")})<sup>2</sup> = (${f("-1", "2")})<sup>2</sup>, chia 2 trường hợp:<br>• x - ${f("1", "2")} = ${f("1", "2")} ⇒ <b>x = 1</b>.<br>• x - ${f("1", "2")} = ${f("-1", "2")} ⇒ <b>x = 0</b>.`,
-                mistake: `Quên rằng (${f("-1", "2")})<sup>2</sup> cũng bằng ${f("1", "4")} nên thiếu mất nghiệm x = 0.`
-            },
-            {
-                stage: 4, level: "Khó",
-                q: `Tìm x, biết: &nbsp; ${f("3", "4")} - (x + ${f("1", "2")}) = ${f("-5", "8")}`,
-                options: [`x = ${f("7", "8")}`, `x = ${f("-7", "8")}`, `x = ${f("15", "8")}`, `x = ${f("3", "8")}`],
-                correct: 0,
-                solution: `Xem cả ngoặc (x + ${f("1", "2")}) là số trừ:<br>x + ${f("1", "2")} = ${f("3", "4")} - (${f("-5", "8")}) = ${f("6", "8")} + ${f("5", "8")} = ${f("11", "8")}.<br>Chuyển vế: x = ${f("11", "8")} - ${f("1", "2")} = ${f("11", "8")} - ${f("4", "8")} = <b>${f("7", "8")}</b>.`,
-                mistake: `Bỏ ngoặc nhưng quên đổi dấu +${f("1", "2")} thành -${f("1", "2")}.`
-            }
-        ];
+    <!-- TAB 3: HUY HIỆU -->
+    <div id="tab-badges" class="tab-page">
+      <h2 style="margin:0; font-size:22px; font-weight:900;">🏅 Bộ Sưu Tập Huy Hiệu</h2>
+      <div class="badge-grid" id="badges-list"></div>
+    </div>
 
-        // Trạng thái trò chơi
-        let state = {
-            studentName: "",
-            studentClass: "",
-            heroIndex: 0,
-            currentQIndex: 0,
-            totalScore: 0,
-            stageScores: [0, 0, 0, 0, 0],
-            unlockedBadges: [],
-            answered: false
-        };
+    <!-- TAB 4: ÔN TẬP NHANH -->
+    <div id="tab-review" class="tab-page">
+      <h2 style="margin:0; font-size:22px; font-weight:900;">🕯️ Cẩm Nang Kiến Thức</h2>
+      <div class="card-box">
+        <h4 style="margin:0 0 6px;">1. So sánh số hữu tỉ</h4>
+        <div style="font-size:14px; line-height:1.5;">Viết hai số dưới dạng phân số cùng mẫu dương rồi so sánh tử số. Số hữu tỉ âm luôn nhỏ hơn 0 và nhỏ hơn số hữu tỉ dương.</div>
+      </div>
+      <div class="card-box">
+        <h4 style="margin:0 0 6px;">2. Quy tắc dấu ngoặc</h4>
+        <div style="font-size:14px; line-height:1.5;">• Trước ngoặc dấu <b>"+"</b>: giữ nguyên dấu các số hạng.<br>• Trước ngoặc dấu <b>"-"</b>: đổi dấu tất cả số hạng bên trong.</div>
+      </div>
+      <div class="card-box">
+        <h4 style="margin:0 0 6px;">3. Thứ tự phép tính & Chuyển vế</h4>
+        <div style="font-size:14px; line-height:1.5;">• Lũy thừa → Nhân, chia → Cộng, trừ.<br>• Khi chuyển một số hạng từ vế này sang vế kia, ta phải <b>đổi dấu</b> số hạng đó.</div>
+      </div>
+    </div>
 
-        // Chọn nhân vật
-        function selectHero(idx) {
-            state.heroIndex = idx;
-            document.querySelectorAll('.hero-card').forEach((card, i) => {
-                if (i === idx) {
-                    card.className = "hero-card border-2 border-blue-600 bg-blue-50 rounded-2xl p-3 text-center transition shadow-sm";
-                    card.querySelector('div:first-child').classList.add('float-hero');
-                } else {
-                    card.className = "hero-card border-2 border-slate-200 bg-white hover:bg-slate-50 rounded-2xl p-3 text-center transition";
-                    card.querySelector('div:first-child').classList.remove('float-hero');
-                }
-            });
-        }
+    <!-- TAB 5: HỒ SƠ & NỘP BÀI -->
+    <div id="tab-profile" class="tab-page">
+      <h2 style="margin:0; font-size:22px; font-weight:900;">👤 Hồ Sơ Hiệp Sĩ</h2>
+      <div class="card-box">
+        <div style="font-size:16px; font-weight:800; margin-bottom:6px;">Học sinh: <span id="prof-name">Minh</span> • Lớp: <span id="prof-class">7A</span></div>
+        <div style="font-size:15px; font-weight:700; color:#475569;">Tổng sao đạt được: <b id="prof-stars">0</b> ⭐</div>
+        <div style="font-size:15px; font-weight:700; color:#475569;">Số câu trả lời đúng: <b id="prof-correct">0</b> câu</div>
+        <hr style="border:1px dashed #cbd5e1; margin:12px 0;">
+        <p style="font-size:14px; font-weight:700; margin:0 0 10px;">Khi hoàn thành các vùng đất (hoặc muốn báo cáo tiến độ), hãy bấm nút bên dưới để gửi điểm về cho Thầy/Cô:</p>
+        <button class="btn btn-green" id="btn-submit-sheet" onclick="submitResultsToSheet()">📤 Nộp kết quả cho Giáo viên</button>
+        <div id="submit-status" style="margin-top:8px; font-size:14px; font-weight:800; text-align:center;"></div>
+      </div>
+      <button class="btn" onclick="goHome()">🏠 Về màn hình chính</button>
+    </div>
 
-        // Bắt đầu game
-        function startGame() {
-            const nameInput = document.getElementById('student-name').value.trim();
-            const classInput = document.getElementById('student-class').value.trim();
-            const errBox = document.getElementById('start-error');
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" onclick="switchTab('map', this)"><span class="ico">🗺️</span>Bản đồ</button>
+      <button class="nav-item" onclick="switchTab('shop', this)"><span class="ico">🛒</span>Cửa hàng</button>
+      <button class="nav-item" onclick="switchTab('badges', this)"><span class="ico">🏅</span>Huy hiệu</button>
+      <button class="nav-item" onclick="switchTab('review', this)"><span class="ico">🕯️</span>Ôn tập</button>
+      <button class="nav-item" onclick="switchTab('profile', this)"><span class="ico">👤</span>Hồ sơ</button>
+    </nav>
+  </section>
 
-            if (!nameInput || !classInput) {
-                errBox.classList.remove('hidden');
-                return;
-            }
-            errBox.classList.add('hidden');
+  <!-- ==================== SCREEN 3: QUIZ STAGE ==================== -->
+  <section id="screen-quiz" class="screen" style="padding:0;">
+    <div class="hud">
+      <div class="hud-left">
+        <div class="avatar-circle" id="q-hud-avatar">🐶</div>
+        <div class="hud-info">
+          <div class="hud-name-row">
+            <span id="q-hud-name">Minh</span>
+            <span class="hud-lvl" id="q-hud-lvl">Cấp 1</span>
+          </div>
+          <div class="xp-bar"><div class="xp-fill" id="q-hud-xp-fill"></div></div>
+          <div class="xp-text" id="q-hud-xp-text">0/100 XP</div>
+        </div>
+      </div>
+      <div class="coin-pill">🪙 <span id="q-hud-coins">50</span></div>
+      <button class="icon-btn" onclick="toggleSfx()">🔊</button>
+    </div>
 
-            state.studentName = nameInput;
-            state.studentClass = classInput;
+    <div class="quiz-subbar">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button class="icon-btn" style="width:34px; height:34px; border-radius:10px;" onclick="exitStage()">✕</button>
+        <span style="font-weight:900; font-size:15px;" id="stage-title-bar">Làng Tập Hợp ℚ • Thường</span>
+      </div>
+      <div class="hearts" id="hearts-display">❤️❤️❤️❤️❤️</div>
+    </div>
 
-            // Cập nhật HUD
-            document.getElementById('hud-hero-icon').textContent = HEROES[state.heroIndex].icon;
-            document.getElementById('hud-student-info').textContent = `${state.studentName} - ${state.studentClass}`;
+    <div class="progress-segments" id="progress-segments"></div>
 
-            // Chuyển màn hình
-            document.getElementById('screen-start').classList.add('hidden');
-            document.getElementById('screen-game').classList.remove('hidden');
+    <!-- Question Box -->
+    <div class="question-card">
+      <div class="q-header">
+        <span class="q-type" id="q-type-label">TRẮC NGHIỆM</span>
+        <span class="q-badge" id="q-diff-badge">THƯỜNG</span>
+      </div>
+      <div class="q-text" id="q-text">Nội dung câu hỏi</div>
 
-            renderQuestion();
-        }
+      <!-- Multiple Choice Container -->
+      <div id="mc-area" class="options-list"></div>
 
-        // Hiển thị câu hỏi hiện tại
-        function renderQuestion() {
-            state.answered = false;
-            const qObj = QUESTIONS[state.currentQIndex];
-            const stageObj = STAGES[qObj.stage];
+      <!-- Fill-in Container -->
+      <div id="fill-area" style="display:none;">
+        <div class="fill-display" id="fill-input-box"></div>
+        <div class="fill-preview" id="fill-preview-box">Em viết: </div>
+        <div class="keypad">
+          <button class="key-btn" onclick="pressKey('1')">1</button>
+          <button class="key-btn" onclick="pressKey('2')">2</button>
+          <button class="key-btn" onclick="pressKey('3')">3</button>
+          <button class="key-btn" onclick="pressKey('4')">4</button>
+          <button class="key-btn" onclick="pressKey('5')">5</button>
+          <button class="key-btn" onclick="pressKey('6')">6</button>
+          <button class="key-btn" onclick="pressKey('7')">7</button>
+          <button class="key-btn" onclick="pressKey('8')">8</button>
+          <button class="key-btn" onclick="pressKey('9')">9</button>
+          <button class="key-btn" onclick="pressKey('0')">0</button>
+          <button class="key-btn" onclick="pressKey('-')">−</button>
+          <button class="key-btn" onclick="pressKey('/')">/</button>
+          <button class="key-btn" onclick="pressKey(',')">,</button>
+          <button class="key-btn" style="grid-column: span 2; background:#fee2e2;" onclick="pressKey('BACK')">⌫ Xóa</button>
+        </div>
+      </div>
 
-            // Cập nhật thanh trạng thái
-            document.getElementById('hud-stage-name').textContent = stageObj.name;
-            document.getElementById('hud-score').textContent = `${state.totalScore} / 40`;
-            document.getElementById('hud-q-counter').textContent = `Câu ${state.currentQIndex + 1} / 40`;
-            document.getElementById('hud-badges-count').textContent = `🏅 Huy hiệu: ${state.unlockedBadges.length}/5`;
+      <button id="btn-check-answer" class="btn btn-gold" style="margin-top:14px;" onclick="checkAnswer()" disabled>
+        Kiểm tra
+      </button>
+    </div>
 
-            const progressPercent = ((state.currentQIndex + 1) / QUESTIONS.length) * 100;
-            document.getElementById('hud-progress-bar').style.width = `${progressPercent}%`;
+    <!-- 4 Power-ups (Including 3-level Hint) -->
+    <div class="powerups-grid">
+      <button class="pu-btn" id="pu-hint" onclick="useHint()">
+        <span class="pu-ico">📜</span>
+        <span>Gợi ý (<span id="hint-level-txt">0/3</span>)</span>
+        <span class="pu-sub" id="pu-hint-count">2 miễn phí</span>
+      </button>
+      <button class="pu-btn" id="pu-fifty" onclick="useFiftyFifty()">
+        <span class="pu-ico">✂️</span>
+        <span>50:50</span>
+        <span class="pu-sub" id="pu-fifty-count">1</span>
+      </button>
+      <button class="pu-btn" id="pu-skip" onclick="useSkip()">
+        <span class="pu-ico">👟</span>
+        <span>Bỏ qua</span>
+        <span class="pu-sub" id="pu-skip-count">0</span>
+      </button>
+      <button class="pu-btn" id="pu-heal" onclick="useHeal()">
+        <span class="pu-ico">🧪</span>
+        <span>Hồi máu</span>
+        <span class="pu-sub" id="pu-heal-count">1</span>
+      </button>
+    </div>
 
-            // Huy hiệu chủ đề và mức độ
-            document.getElementById('q-topic-badge').textContent = stageObj.topic;
-            const levelBadge = document.getElementById('q-level-badge');
-            levelBadge.textContent = `Mức độ: ${qObj.level}`;
-            if (qObj.level === "Dễ") {
-                levelBadge.className = "text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800";
-            } else if (qObj.level === "Trung bình") {
-                levelBadge.className = "text-xs font-bold px-2.5 py-1 rounded-lg bg-amber-100 text-amber-800";
-            } else {
-                levelBadge.className = "text-xs font-bold px-2.5 py-1 rounded-lg bg-rose-100 text-rose-800";
-            }
+    <!-- 3-Level Hint Display -->
+    <div id="hint-box" class="hint-box"></div>
 
-            // Nội dung câu hỏi
-            document.getElementById('q-text').innerHTML = `Câu ${state.currentQIndex + 1}: ${qObj.q}`;
+    <!-- Step-by-Step Result Panel -->
+    <div id="result-panel" class="result-panel">
+      <div class="res-header">
+        <div class="res-title" id="res-title">✅ Tuyệt vời!</div>
+        <div class="res-rewards" id="res-rewards"></div>
+      </div>
+      <div class="res-card" id="res-correct-ans"></div>
+      <div class="res-card" id="res-explanation"></div>
+      <div class="mistake-card" id="res-mistake" style="display:none;"></div>
+      <button class="btn btn-gold" onclick="nextQuestion()">Tiếp tục ▶</button>
+    </div>
+  </section>
+</div>
 
-            // Sinh 4 đáp án
-            const letters = ["A", "B", "C", "D"];
-            const optionsContainer = document.getElementById('options-container');
-            optionsContainer.innerHTML = "";
+<!-- ==================== MODALS ==================== -->
+<!-- Modal: Tạo nhân vật mới -->
+<div id="modal-newchar" class="modal-backdrop">
+  <div class="modal-box">
+    <h2 style="margin:0 0 8px; font-weight:900;">Tạo Hiệp Sĩ Mới</h2>
+    <p style="margin:0 0 12px; font-size:14px; font-weight:700; color:#475569;">Chọn linh vật đồng hành và nhập tên của em</p>
+    <div class="avatar-picker" id="avatar-picker">
+      <button type="button" class="av-opt selected" data-av="🐶" onclick="selectAvatar(this)">🐶</button>
+      <button type="button" class="av-opt" data-av="🐱" onclick="selectAvatar(this)">🐱</button>
+      <button type="button" class="av-opt" data-av="🦊" onclick="selectAvatar(this)">🦊</button>
+      <button type="button" class="av-opt" data-av="🐼" onclick="selectAvatar(this)">🐼</button>
+    </div>
+    <input type="text" id="inp-student-name" class="input-field" placeholder="Họ và tên học sinh (VD: Nguyễn Văn Minh)" />
+    <input type="text" id="inp-student-class" class="input-field" placeholder="Lớp (VD: 7A1)" />
+    <button class="btn btn-gold" onclick="createNewCharacter()">Bắt đầu hành trình 🚀</button>
+    <button class="btn" style="margin-top:8px;" onclick="closeModals()">Hủy</button>
+  </div>
+</div>
 
-            qObj.options.forEach((optHTML, idx) => {
-                const btn = document.createElement('button');
-                btn.type = "button";
-                btn.id = `opt-btn-${idx}`;
-                btn.onclick = () => checkAnswer(idx);
-                btn.className = "w-full text-left p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-blue-400 hover:bg-blue-50/50 transition flex items-center gap-3.5 text-base sm:text-lg font-semibold text-slate-800 shadow-sm active:scale-[0.99]";
-                btn.innerHTML = `
-                    <span class="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 font-extrabold flex items-center justify-center shrink-0 border border-slate-300" id="opt-letter-${idx}">
-                        ${letters[idx]}
-                    </span>
-                    <span class="flex-1 leading-snug">${optHTML}</span>
-                `;
-                optionsContainer.appendChild(btn);
-            });
+<!-- Modal: Chọn mức độ thử thách -->
+<div id="modal-diff" class="modal-backdrop">
+  <div class="modal-box">
+    <h2 id="modal-land-title" style="margin:0 0 6px; font-size:24px; font-weight:900;">Làng Tập Hợp ℚ</h2>
+    <p id="modal-land-desc" style="margin:0 0 12px; font-size:15px; font-weight:700; color:#475569;">8 thử thách. Sai một câu mất một tim.</p>
+    <div style="font-weight:900; font-size:16px;">Chọn mức độ</div>
+    <div class="diff-grid">
+      <div class="diff-card diff-easy" onclick="startStage('easy')">
+        <h4>Dễ</h4>
+        <p>Làm quen</p>
+        <p style="color:#15803d; font-weight:900;">×1 thưởng</p>
+      </div>
+      <div class="diff-card diff-med" onclick="startStage('medium')">
+        <h4>Thường</h4>
+        <p>Vừa sức</p>
+        <p style="color:#b45309; font-weight:900;">×1.5 thưởng</p>
+      </div>
+      <div class="diff-card diff-hard" onclick="startStage('hard')">
+        <h4>Khó</h4>
+        <p>Thử thách</p>
+        <p style="color:#be123c; font-weight:900;">×2 thưởng</p>
+      </div>
+    </div>
+    <button class="btn" onclick="closeModals()">Để sau</button>
+  </div>
+</div>
 
-            // Ẩn khung phản hồi & nút tiếp theo
-            document.getElementById('feedback-box').classList.add('hidden');
-            document.getElementById('game-footer').classList.add('hidden');
-        }
+<!-- Modal: Dành cho giáo viên -->
+<div id="modal-teacher" class="modal-backdrop">
+  <div class="modal-box">
+    <h2 style="margin:0 0 8px; font-weight:900;">⚙️ Cài Đặt Giáo Viên</h2>
+    <p style="margin:0 0 10px; font-size:13px; color:#475569;">Thông tin hiển thị ở trang đầu và đường link Google Apps Script (/exec) nhận điểm:</p>
+    <input type="text" id="cfg-teacher" class="input-field" value="Trần Thị Thu Chẳng" placeholder="Tên giáo viên" />
+    <input type="text" id="cfg-school" class="input-field" value="Trường THCS Nam Đàn" placeholder="Tên trường" />
+    <input type="text" id="cfg-script" class="input-field" value="https://script.google.com/macros/s/AKfycby_8k2ZQB4GcG7qdanf8OuCKHH_tN9i4iXo6DH4KvlQQ9R5uXku0fw3itsvauc15-Yx/exec" placeholder="Link Google Apps Script /exec" />
+    <button class="btn btn-gold" onclick="saveTeacherConfig()">Lưu cấu hình</button>
+    <button class="btn" style="margin-top:8px;" onclick="closeModals()">Đóng</button>
+  </div>
+</div>
 
-        // Kiểm tra đáp án khi học sinh chọn
-        function checkAnswer(selectedIdx) {
-            if (state.answered) return;
-            state.answered = true;
+<script>
+// =========================================================================
+// 1. CẤU HÌNH MẶC ĐỊNH & ÂM THANH (WEB AUDIO API - KHÔNG CẦN FILE MP3 NGOÀI)
+// =========================================================================
+const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby_8k2ZQB4GcG7qdanf8OuCKHH_tN9i4iXo6DH4KvlQQ9R5uXku0fw3itsvauc15-Yx/exec";
 
-            const qObj = QUESTIONS[state.currentQIndex];
-            const isCorrect = (selectedIdx === qObj.correct);
+let teacherConfig = JSON.parse(localStorage.getItem('vqht_teacher_cfg')) || {
+  teacherName: "Trần Thị Thu Chẳng",
+  schoolName: "Trường THCS Nam Đàn",
+  scriptUrl: DEFAULT_SCRIPT_URL
+};
 
-            // Cộng điểm nếu đúng
-            if (isCorrect) {
-                state.totalScore++;
-                state.stageScores[qObj.stage]++;
-                document.getElementById('hud-score').textContent = `${state.totalScore} / 40`;
-            }
+let sfxEnabled = true;
+let bgmEnabled = false;
+let audioCtx = null;
+let bgmTimer = null;
 
-            // Tô màu các nút đáp án
-            qObj.options.forEach((_, idx) => {
-                const btn = document.getElementById(`opt-btn-${idx}`);
-                const letter = document.getElementById(`opt-letter-${idx}`);
-                btn.disabled = true;
+function initAudio() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+}
 
-                if (idx === qObj.correct) {
-                    btn.className = "w-full text-left p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 flex items-center gap-3.5 text-base sm:text-lg font-bold text-emerald-950 shadow-sm";
-                    letter.className = "w-9 h-9 rounded-xl bg-emerald-500 text-white font-extrabold flex items-center justify-center shrink-0";
-                    letter.textContent = "✓";
-                } else if (idx === selectedIdx && !isCorrect) {
-                    btn.className = "w-full text-left p-4 rounded-2xl border-2 border-rose-500 bg-rose-50 flex items-center gap-3.5 text-base sm:text-lg font-bold text-rose-950 shadow-sm";
-                    letter.className = "w-9 h-9 rounded-xl bg-rose-500 text-white font-extrabold flex items-center justify-center shrink-0";
-                    letter.textContent = "✕";
-                } else {
-                    btn.className = "w-full text-left p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 opacity-60 flex items-center gap-3.5 text-base sm:text-lg font-medium text-slate-500";
-                }
-            });
+function playTone(freq, duration, type = 'sine', vol = 0.12) {
+  if (!sfxEnabled) return;
+  initAudio();
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+  gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+  osc.stop(audioCtx.currentTime + duration);
+}
 
-            // Hiển thị lời giải chi tiết (luôn hiện) + Lỗi sai thường gặp (nếu sai)
-            const fbBox = document.getElementById('feedback-box');
-            const fbHeader = document.getElementById('feedback-header');
-            const fbSolution = document.getElementById('feedback-solution');
-            const fbMistakeBox = document.getElementById('feedback-mistake-box');
-            const fbMistake = document.getElementById('feedback-mistake');
+function playSoundEffect(kind) {
+  if (!sfxEnabled) return;
+  if (kind === 'click') playTone(520, 0.08, 'triangle', 0.1);
+  if (kind === 'correct') {
+    playTone(523.25, 0.12, 'sine', 0.15);
+    setTimeout(() => playTone(659.25, 0.12, 'sine', 0.15), 90);
+    setTimeout(() => playTone(783.99, 0.25, 'sine', 0.18), 180);
+  }
+  if (kind === 'wrong') {
+    playTone(240, 0.18, 'sawtooth', 0.12);
+    setTimeout(() => playTone(180, 0.28, 'sawtooth', 0.12), 140);
+  }
+  if (kind === 'win') {
+    [523, 659, 784, 1046].forEach((f, idx) => {
+      setTimeout(() => playTone(f, 0.2, 'triangle', 0.16), idx * 110);
+    });
+  }
+}
 
-            fbBox.classList.remove('hidden');
-            fbSolution.innerHTML = qObj.solution;
+function toggleSfx() {
+  sfxEnabled = !sfxEnabled;
+  document.getElementById('btn-sfx').textContent = sfxEnabled ? '🔊 Âm thanh: bật' : '🔇 Âm thanh: tắt';
+  document.getElementById('hud-sound-btn').textContent = sfxEnabled ? '🔊' : '🔇';
+  if (sfxEnabled) playSoundEffect('click');
+}
 
-            if (isCorrect) {
-                fbBox.className = "rounded-2xl p-4 sm:p-5 border-2 border-emerald-300 bg-emerald-50/90 space-y-3 pop-in";
-                fbHeader.className = "flex items-center gap-2 font-extrabold text-lg text-emerald-700";
-                fbHeader.innerHTML = `<span>🎉</span> <span>Chính xác! Tuyệt vời quá!</span>`;
-                fbMistakeBox.classList.add('hidden');
-            } else {
-                fbBox.className = "rounded-2xl p-4 sm:p-5 border-2 border-rose-300 bg-rose-50/90 space-y-3 pop-in";
-                fbHeader.className = "flex items-center gap-2 font-extrabold text-lg text-rose-700";
-                fbHeader.innerHTML = `<span>💡</span> <span>Chưa chính xác! Xem kỹ lời giải nhé:</span>`;
-                fbMistakeBox.classList.remove('hidden');
-                fbMistake.innerHTML = qObj.mistake;
-            }
+function toggleBgm() {
+  bgmEnabled = !bgmEnabled;
+  document.getElementById('btn-bgm').textContent = bgmEnabled ? '🎵 Nhạc nền: bật' : '🎵 Nhạc nền: tắt';
+  if (bgmEnabled) {
+    initAudio();
+    const melody = [392, 440, 493.88, 523.25, 587.33, 523.25, 493.88, 440];
+    let step = 0;
+    bgmTimer = setInterval(() => {
+      if (!bgmEnabled) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(melody[step % melody.length], audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.035, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.38);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.4);
+      step++;
+    }, 450);
+  } else {
+    clearInterval(bgmTimer);
+  }
+}
 
-            // Hiện nút tiếp theo
-            const btnNext = document.getElementById('btn-next');
-            if ((state.currentQIndex + 1) % 8 === 0 && state.currentQIndex < QUESTIONS.length - 1) {
-                btnNext.innerHTML = `<span>HOÀN THÀNH VÙNG ${qObj.stage + 1}</span> <span>🏅</span>`;
-            } else if (state.currentQIndex === QUESTIONS.length - 1) {
-                btnNext.innerHTML = `<span>XEM TỔNG KẾT & NỘP ĐIỂM</span> <span>👑</span>`;
-            } else {
-                btnNext.innerHTML = `<span>CÂU TIẾP THEO</span> <span>➡️</span>`;
-            }
-            document.getElementById('game-footer').classList.remove('hidden');
+// Helper hiển thị phân số đẹp
+function F(num, den) {
+  return `<span class="frac"><span>${num}</span><span>${den}</span></span>`;
+}
 
-            // Tự động cuộn nhẹ xuống phần lời giải trên điện thoại
-            setTimeout(() => {
-                fbBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }, 100);
-        }
+// =========================================================================
+// 2. NGÂN HÀNG 40 CÂU HỎI TOÁN 7 (KẾT NỐI TRI THỨC - HẾT BÀI 4)
+//    Chia 5 Vùng đất, mỗi vùng đất 8 câu (từ Dễ đến Khó) + 3 mức Gợi ý
+// =========================================================================
+const LANDS = [
+  {
+    id: 0,
+    name: "Làng Tập Hợp ℚ",
+    topic: "So sánh số hữu tỉ",
+    icon: "🏡",
+    maxStars: 24,
+    questions: [
+      {
+        type: "mc",
+        q: `So sánh hai số hữu tỉ ${F('-3', '5')} và ${F('-2', '5')}.`,
+        options: [`${F('-3', '5')} > ${F('-2', '5')}`, `${F('-3', '5')} < ${F('-2', '5')}`, `${F('-3', '5')} = ${F('-2', '5')}`],
+        ans: 1,
+        hints: [
+          "Mức 1: Quan sát mẫu số của hai phân số đều là số dương 5.",
+          "Mức 2: So sánh hai tử số là −3 và −2 trên trục số.",
+          "Mức 3: Vì −3 nằm bên trái −2 nên −3 < −2, suy ra phân số thứ nhất nhỏ hơn."
+        ],
+        steps: `1. Hai phân số có cùng mẫu dương 5.<br>2. Vì −3 < −2 nên ${F('-3', '5')} < ${F('-2', '5')}.`,
+        mistake: "Quên xét dấu âm, nhầm rằng 3 > 2 nên −3/5 > −2/5."
+      },
+      {
+        type: "mc",
+        q: `So sánh −${F('2', '3')} và −${F('3', '4')}.`,
+        options: [`−${F('2', '3')} = −${F('3', '4')}`, `−${F('2', '3')} < −${F('3', '4')}`, `−${F('2', '3')} > −${F('3', '4')}`],
+        ans: 2,
+        hints: [
+          "Mức 1: Hai phân số khác mẫu số, hãy tìm mẫu số chung dương là 12.",
+          "Mức 2: Quy đồng: −2/3 = −8/12 và −3/4 = −9/12.",
+          "Mức 3: So sánh tử số: −8 > −9."
+        ],
+        steps: `1. Quy đồng mẫu 12: −${F('2', '3')} = −${F('8', '12')}, −${F('3', '4')} = −${F('9', '12')}.<br>2. Vì −8 > −9 nên −${F('8', '12')} > −${F('9', '12')}, tức là −${F('2', '3')} > −${F('3', '4')}.`,
+        mistake: "So sánh nhầm −8 < −9 dẫn đến chọn sai chiều bất đẳng thức."
+      },
+      {
+        type: "fill",
+        q: `Số đối của −${F('4', '5')} là:`,
+        ansText: ["4/5", "0,8", "0.8"],
+        ansDisplay: `${F('4', '5')}`,
+        hints: [
+          "Mức 1: Hai số đối nhau có tổng bằng 0.",
+          "Mức 2: Số đối của một số hữu tỉ âm là một số hữu tỉ dương.",
+          "Mức 3: Đổi dấu trừ thành dấu cộng, ta được phân số 4/5."
+        ],
+        steps: `1. Số đối của số hữu tỉ a là −a.<br>2. Do đó số đối của −${F('4', '5')} là ${F('4', '5')}.`,
+        mistake: "Nghịch đảo phân số thành −5/4 thay vì tìm số đối."
+      },
+      {
+        type: "mc",
+        q: `Sắp xếp các số sau theo thứ tự tăng dần: −1,5; −${F('4', '3')}; 0; ${F('2', '3')}.`,
+        options: [
+          `−1,5; −${F('4', '3')}; 0; ${F('2', '3')}`,
+          `−${F('4', '3')}; −1,5; 0; ${F('2', '3')}`,
+          `0; ${F('2', '3')}; −${F('4', '3')}; −1,5`
+        ],
+        ans: 1,
+        hints: [
+          "Mức 1: Số âm luôn nhỏ hơn 0, 0 nhỏ hơn số dương.",
+          "Mức 2: Đổi −1,5 = −9/6 và −4/3 = −8/6 để so sánh hai số âm.",
+          "Mức 3: Vì −9/6 < −8/6 nên −1,5 đứng đầu tiên."
+        ],
+        steps: `1. Ta có −1,5 = −${F('3', '2')} = −${F('9', '6')} và −${F('4', '3')} = −${F('8', '6')}.<br>2. Vì −${F('9', '6')} < −${F('8', '6')} < 0 < ${F('2', '3')} nên thứ tự tăng dần là: −1,5; −${F('4', '3')}; 0; ${F('2', '3')}.`,
+        mistake: "Nhầm lẫn độ lớn của hai số âm −1,5 và −1,33..."
+      },
+      {
+        type: "mc",
+        q: `Có bao nhiêu số nguyên x thỏa mãn −${F('7', '3')} < x < −${F('1', '2')}?`,
+        options: ["1 số", "2 số", "3 số"],
+        ans: 1,
+        hints: [
+          "Mức 1: Đổi các phân số ra hỗn số hoặc số thập phân để dễ thấy vị trí trên trục số.",
+          "Mức 2: −7/3 = −2,33... và −1/2 = −0,5.",
+          "Mức 3: Các số nguyên nằm giữa −2,33 và −0,5 là −2 và −1."
+        ],
+        steps: `1. Ta có −${F('7', '3')} = −2${F('1', '3')} và −${F('1', '2')} = −0,5.<br>2. Các số nguyên x thỏa mãn là x ∈ {−2; −1}, gồm 2 số.`,
+        mistake: "Lấy cả số −3 (vì −3 < −7/3) hoặc số 0 (vì 0 > −1/2)."
+      },
+      {
+        type: "mc",
+        q: `So sánh hai số hữu tỉ A = ${F('-9', '11')} và B = ${F('-11', '13')}.`,
+        options: ["A > B", "A < B", "A = B"],
+        ans: 0,
+        hints: [
+          "Mức 1: Sử dụng phương pháp phần bù đến −1 (hoặc quy đồng mẫu 143).",
+          "Mức 2: Ta có −9/11 = −1 + 2/11 và −11/13 = −1 + 2/13.",
+          "Mức 3: Vì 2/11 > 2/13 nên −1 + 2/11 > −1 + 2/13."
+        ],
+        steps: `1. Tách phần nguyên: ${F('-9', '11')} = −1 + ${F('2', '11')}; ${F('-11', '13')} = −1 + ${F('2', '13')}.<br>2. Vì ${F('2', '11')} > ${F('2', '13')} nên A > B.`,
+        mistake: "Nhầm lẫn giữa phần bù của phân số dương và phân số âm."
+      },
+      {
+        type: "mc",
+        q: `Tìm các số nguyên x để ${F('-5', '6')} < ${F('x', '12')} < ${F('-1', '4')}.`,
+        options: [
+          "x ∈ {−9; −8; −7; −6; −5; −4}",
+          "x ∈ {−10; −9; −8; −7; −6; −5; −4}",
+          "x ∈ {−9; −8; −7; −6; −5}"
+        ],
+        ans: 0,
+        hints: [
+          "Mức 1: Quy đồng cả ba phân số về cùng mẫu dương 12.",
+          "Mức 2: −5/6 = −10/12 và −1/4 = −3/12.",
+          "Mức 3: Suy ra −10 < x < −3, liệt kê các số nguyên ở giữa."
+        ],
+        steps: `1. Quy đồng mẫu 12: ${F('-10', '12')} < ${F('x', '12')} < ${F('-3', '12')}.<br>2. Suy ra −10 < x < −3 ⇒ x ∈ {−9; −8; −7; −6; −5; −4}.`,
+        mistake: "Lấy nhầm cả đầu mút −10 hoặc −3 trong khi dấu bất đẳng thức không có dấu bằng."
+      },
+      {
+        type: "mc",
+        q: `Cho a, b ∈ ℤ, b > 0 và a < b. So sánh ${F('a', 'b')} và ${F('a + 2026', 'b + 2026')}.`,
+        options: [
+          `${F('a', 'b')} < ${F('a + 2026', 'b + 2026')}`,
+          `${F('a', 'b')} > ${F('a + 2026', 'b + 2026')}`,
+          `${F('a', 'b')} = ${F('a + 2026', 'b + 2026')}`
+        ],
+        ans: 0,
+        hints: [
+          "Mức 1: Thử chọn một cặp số cụ thể thỏa mãn a < b, ví dụ a = 1, b = 2.",
+          "Mức 2: Xét hiệu a/b − (a+2026)/(b+2026) bằng cách quy đồng.",
+          "Mức 3: Tử số hiệu bằng 2026(a − b) < 0 vì a < b."
+        ],
+        steps: `1. Xét hiệu: ${F('a', 'b')} − ${F('a + 2026', 'b + 2026')} = ${F('2026(a − b)', 'b(b + 2026)')}.<br>2. Vì a < b nên a − b < 0, mẫu dương nên hiệu âm ⇒ ${F('a', 'b')} < ${F('a + 2026', 'b + 2026')}.`,
+        mistake: "Lầm tưởng cộng cả tử và mẫu với cùng một số thì phân số không đổi."
+      }
+    ]
+  },
+  {
+    id: 1,
+    name: "Thành Bốn Phép Tính",
+    topic: "Cộng, trừ, nhân, chia số hữu tỉ",
+    icon: "🏰",
+    maxStars: 24,
+    questions: [
+      {
+        type: "mc",
+        q: `Tính: ${F('-3', '4')} + ${F('1', '4')}.`,
+        options: [`−${F('1', '2')}`, `−${F('1', '4')}`, `${F('1', '2')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Hai phân số đã có cùng mẫu số 4.",
+          "Mức 2: Cộng hai tử số: −3 + 1 = −2, giữ nguyên mẫu 4.",
+          "Mức 3: Rút gọn phân số −2/4 cho 2."
+        ],
+        steps: `1. ${F('-3', '4')} + ${F('1', '4')} = ${F('-3 + 1', '4')} = ${F('-2', '4')}.<br>2. Rút gọn tối giản ta được −${F('1', '2')}.`,
+        mistake: "Cộng cả tử với tử và mẫu với mẫu thành −2/8."
+      },
+      {
+        type: "fill",
+        q: `Tính: ${F('2', '3')} − (−${F('1', '3')}) =`,
+        ansText: ["1"],
+        ansDisplay: "1",
+        hints: [
+          "Mức 1: Trừ đi một số âm chính là cộng với số đối của nó.",
+          "Mức 2: Biểu thức trở thành 2/3 + 1/3.",
+          "Mức 3: 3/3 rút gọn bằng 1."
+        ],
+        steps: `1. ${F('2', '3')} − (−${F('1', '3')}) = ${F('2', '3')} + ${F('1', '3')} = ${F('3', '3')} = 1.`,
+        mistake: "Quên đổi dấu trừ thành cộng nên tính ra 1/3."
+      },
+      {
+        type: "mc",
+        q: `Tính tích: (−${F('2', '3')}) · ${F('3', '5')}.`,
+        options: [`−${F('2', '5')}`, `${F('2', '5')}`, `−${F('5', '8')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Nhân tử với tử, mẫu với mẫu (âm nhân dương ra âm).",
+          "Mức 2: Rút gọn chéo thừa số 3 ở tử và mẫu.",
+          "Mức 3: Kết quả còn lại dấu trừ và phân số 2/5."
+        ],
+        steps: `1. (−${F('2', '3')}) · ${F('3', '5')} = ${F('-2 · 3', '3 · 5')} = −${F('2', '5')}.`,
+        mistake: "Đi quy đồng mẫu số khi thực hiện phép nhân phân số."
+      },
+      {
+        type: "mc",
+        q: `Tính thương: ${F('-4', '7')} : ${F('8', '-21')}.`,
+        options: [`${F('3', '2')}`, `−${F('3', '2')}`, `−${F('32', '147')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Muốn chia hai phân số, ta nhân số bị chia với nghịch đảo của số chia.",
+          "Mức 2: Viết thành (−4/7) · (−21/8). Chú ý âm nhân âm ra dương.",
+          "Mức 3: Rút gọn 21 với 7 được 3; rút gọn 4 với 8 được 1/2."
+        ],
+        steps: `1. ${F('-4', '7')} : ${F('8', '-21')} = ${F('-4', '7')} · ${F('-21', '8')} = ${F('84', '56')} = ${F('3', '2')}.`,
+        mistake: "Quên nghịch đảo phân số thứ hai hoặc tính nhầm dấu âm."
+      },
+      {
+        type: "mc",
+        q: `Tính: (−1${F('1', '2')}) + ${F('5', '6')}.`,
+        options: [`−${F('2', '3')}`, `${F('2', '3')}`, `−${F('1', '3')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Đổi hỗn số −1(1/2) ra phân số trước khi tính.",
+          "Mức 2: −1(1/2) = −3/2 = −9/6.",
+          "Mức 3: Tính −9/6 + 5/6 = −4/6 = −2/3."
+        ],
+        steps: `1. Đổi hỗn số: −1${F('1', '2')} = −${F('3', '2')} = −${F('9', '6')}.<br>2. Cộng phân số: −${F('9', '6')} + ${F('5', '6')} = −${F('4', '6')} = −${F('2', '3')}.`,
+        mistake: "Đổi nhầm hỗn số −1(1/2) thành −1/2."
+      },
+      {
+        type: "mc",
+        q: `Tính: (−${F('3', '4')}) · 1${F('1', '3')} − ${F('5', '6')}.`,
+        options: [`−${F('11', '6')}`, `${F('1', '6')}`, `−${F('1', '2')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Đổi hỗn số 1(1/3) = 4/3 và thực hiện phép nhân trước.",
+          "Mức 2: (−3/4) · (4/3) = −1.",
+          "Mức 3: Lấy −1 − 5/6 = −6/6 − 5/6 = −11/6."
+        ],
+        steps: `1. (−${F('3', '4')}) · ${F('4', '3')} − ${F('5', '6')} = −1 − ${F('5', '6')}.<br>2. Quy đồng: −${F('6', '6')} − ${F('5', '6')} = −${F('11', '6')}.`,
+        mistake: "Tính nhầm −1 − 5/6 thành −1/6."
+      },
+      {
+        type: "mc",
+        q: `Tính tích: (${F('1', '2')} − 1)(${F('1', '3')} − 1)(${F('1', '4')} − 1)(${F('1', '5')} − 1).`,
+        options: [`${F('1', '5')}`, `−${F('1', '5')}`, `${F('1', '120')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Tính kết quả trong từng dấu ngoặc trước.",
+          "Mức 2: Ta được (−1/2) · (−2/3) · (−3/4) · (−4/5).",
+          "Mức 3: Có 4 thừa số âm (số chẵn) nên tích mang dấu dương, rút gọn chéo tử và mẫu."
+        ],
+        steps: `1. Thu gọn từng ngoặc: (−${F('1', '2')}) · (−${F('2', '3')}) · (−${F('3', '4')}) · (−${F('4', '5')}).<br>2. Tích 4 số âm mang dấu dương, rút gọn chéo ta được ${F('1', '5')}.`,
+        mistake: "Đếm nhầm số thừa số âm nên kết luận kết quả mang dấu trừ."
+      },
+      {
+        type: "mc",
+        q: `Tính tổng: S = ${F('1', '1·2')} + ${F('1', '2·3')} + ${F('1', '3·4')} + ... + ${F('1', '9·10')}.`,
+        options: [`${F('9', '10')}`, `1`, `${F('1', '10')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Sử dụng công thức tách phân số: 1/[n(n+1)] = 1/n − 1/(n+1).",
+          "Mức 2: S = (1 − 1/2) + (1/2 − 1/3) + ... + (1/9 − 1/10).",
+          "Mức 3: Các số hạng đối nhau ở giữa triệt tiêu hết, chỉ còn 1 − 1/10."
+        ],
+        steps: `1. Tách mỗi số hạng: S = (1 − ${F('1', '2')}) + (${F('1', '2')} − ${F('1', '3')}) + ... + (${F('1', '9')} − ${F('1', '10')}).<br>2. Triệt tiêu các số đối nhau: S = 1 − ${F('1', '10')} = ${F('9', '10')}.`,
+        mistake: "Cố gắng quy đồng mẫu chung cả 9 phân số dẫn đến tính toán sai."
+      }
+    ]
+  },
+  {
+    id: 2,
+    name: "Rừng Luỹ Thừa",
+    topic: "Quy tắc dấu ngoặc & Lũy thừa",
+    icon: "🌲",
+    maxStars: 24,
+    questions: [
+      {
+        type: "mc",
+        q: `Khi bỏ dấu ngoặc trong biểu thức −(x − 3 + y), ta được:`,
+        options: ["−x − 3 + y", "−x + 3 − y", "−x − 3 − y"],
+        ans: 1,
+        hints: [
+          "Mức 1: Nhìn dấu đứng ngay trước dấu ngoặc là dấu trừ (−).",
+          "Mức 2: Khi bỏ ngoặc có dấu trừ đằng trước, phải đổi dấu TẤT CẢ các số hạng bên trong.",
+          "Mức 3: x thành −x; −3 thành +3; +y thành −y."
+        ],
+        steps: `1. Đằng trước ngoặc có dấu "−" nên ta đổi dấu mọi số hạng bên trong:<br>−(x − 3 + y) = −x + 3 − y.`,
+        mistake: "Chỉ đổi dấu số hạng đầu tiên (−x) mà quên đổi dấu −3 và +y."
+      },
+      {
+        type: "mc",
+        q: `Tính giá trị lũy thừa: (−${F('1', '2')})³.`,
+        options: [`−${F('1', '8')}`, `${F('1', '8')}`, `−${F('1', '6')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Lũy thừa bậc lẻ của một số âm luôn là một số âm.",
+          "Mức 2: (−1/2)³ = (−1)³ / 2³.",
+          "Mức 3: 2³ = 2 · 2 · 2 = 8."
+        ],
+        steps: `1. (−${F('1', '2')})³ = ${F('(−1)³', '2³')} = −${F('1', '8')}.`,
+        mistake: "Nhầm 2³ = 2 · 3 = 6 hoặc quên dấu trừ."
+      },
+      {
+        type: "mc",
+        q: `Bỏ ngoặc rồi tính hợp lí: ${F('3', '7')} − (${F('3', '7')} − ${F('4', '5')}).`,
+        options: [`${F('4', '5')}`, `−${F('4', '5')}`, `${F('6', '7')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Bỏ dấu ngoặc có dấu trừ đằng trước.",
+          "Mức 2: Biểu thức trở thành 3/7 − 3/7 + 4/5.",
+          "Mức 3: 3/7 − 3/7 = 0, kết quả còn lại 4/5."
+        ],
+        steps: `1. Phá ngoặc: ${F('3', '7')} − ${F('3', '7')} + ${F('4', '5')}.<br>2. Nhóm hai số đầu: (${F('3', '7')} − ${F('3', '7')}) + ${F('4', '5')} = 0 + ${F('4', '5')} = ${F('4', '5')}.`,
+        mistake: "Quên đổi dấu −4/5 thành +4/5 khi phá ngoặc."
+      },
+      {
+        type: "mc",
+        q: `Viết tích (${F('2', '3')})⁴ · (${F('2', '3')})² dưới dạng một lũy thừa:`,
+        options: [`(${F('2', '3')})⁶`, `(${F('2', '3')})⁸`, `(${F('4', '9')})⁶`],
+        ans: 0,
+        hints: [
+          "Mức 1: Áp dụng công thức nhân hai lũy thừa cùng cơ số: xᵐ · xⁿ = xᵐ⁺ⁿ.",
+          "Mức 2: Giữ nguyên cơ số 2/3, cộng hai số mũ 4 và 2.",
+          "Mức 3: 4 + 2 = 6."
+        ],
+        steps: `1. (${F('2', '3')})⁴ · (${F('2', '3')})² = (${F('2', '3')})⁴⁺² = (${F('2', '3')})⁶.`,
+        mistake: "Nhân hai số mũ 4 · 2 = 8 thay vì cộng hai số mũ."
+      },
+      {
+        type: "mc",
+        q: `Tính hợp lí: −(${F('5', '11')} + ${F('3', '8')}) + (−${F('6', '11')} + ${F('5', '8')}).`,
+        options: [`−${F('3', '4')}`, `−1`, `${F('1', '4')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Phá cả hai dấu ngoặc (chú ý ngoặc đầu có dấu trừ đằng trước).",
+          "Mức 2: Nhóm các phân số cùng mẫu: (−5/11 − 6/11) + (−3/8 + 5/8).",
+          "Mức 3: Tính −1 + 2/8 = −1 + 1/4 = −3/4."
+        ],
+        steps: `1. Phá ngoặc: −${F('5', '11')} − ${F('3', '8')} − ${F('6', '11')} + ${F('5', '8')}.<br>2. Nhóm cùng mẫu: (−${F('5', '11')} − ${F('6', '11')}) + (−${F('3', '8')} + ${F('5', '8')}) = −1 + ${F('1', '4')} = −${F('3', '4')}.`,
+        mistake: "Quên đổi dấu +3/8 trong ngoặc đầu tiên thành −3/8."
+      },
+      {
+        type: "mc",
+        q: `Tính: ${F('1', '3')} − [ ${F('4', '3')} − (−${F('2', '3')} + ${F('5', '6')}) ].`,
+        options: [`−${F('5', '6')}`, `−${F('1', '2')}`, `${F('1', '6')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Phá ngoặc tròn bên trong trước hoặc tính giá trị trong ngoặc tròn.",
+          "Mức 2: Trong ngoặc tròn: −4/6 + 5/6 = 1/6. Trong ngoặc vuông: 4/3 − 1/6 = 7/6.",
+          "Mức 3: Lấy 1/3 − 7/6 = 2/6 − 7/6 = −5/6."
+        ],
+        steps: `1. Ngoặc tròn: −${F('2', '3')} + ${F('5', '6')} = ${F('1', '6')}.<br>2. Ngoặc vuông: ${F('4', '3')} − ${F('1', '6')} = ${F('7', '6')}.<br>3. Kết quả: ${F('1', '3')} − ${F('7', '6')} = −${F('5', '6')}.`,
+        mistake: "Phá đồng thời hai lớp ngoặc nhưng đổi dấu sai một lần."
+      },
+      {
+        type: "mc",
+        q: `Rút gọn biểu thức: M = −(−x + y − z) − (x − y + z) + (x + y − z).`,
+        options: ["x + y − z", "x − y + z", "−x + y + z"],
+        ans: 0,
+        hints: [
+          "Mức 1: Phá lần lượt 3 dấu ngoặc theo đúng quy tắc dấu.",
+          "Mức 2: M = x − y + z − x + y − z + x + y − z.",
+          "Mức 3: Thu gọn các hạng tử đồng dạng theo biến x, y, z."
+        ],
+        steps: `1. Phá ngoặc: M = x − y + z − x + y − z + x + y − z.<br>2. Thu gọn: (x − x + x) + (−y + y + y) + (z − z − z) = x + y − z.`,
+        mistake: "Nhầm dấu ở ngoặc thứ hai khi phá −(x − y + z)."
+      },
+      {
+        type: "mc",
+        q: `Rút gọn biểu thức lũy thừa: A = ${F('(−2)³ · 3⁴', '6²')}.`,
+        options: ["−18", "18", "−9"],
+        ans: 0,
+        hints: [
+          "Mức 1: Tách mẫu số 6² = (2 · 3)² = 2² · 3².",
+          "Mức 2: (−2)³ = −8, còn 2² = 4 nên −8 / 4 = −2.",
+          "Mức 3: 3⁴ / 3² = 3² = 9. Nhân −2 với 9."
+        ],
+        steps: `1. Viết 6² = 2² · 3².<br>2. A = ${F('−8 · 3⁴', '4 · 3²')} = −2 · 3² = −2 · 9 = −18.`,
+        mistake: "Tính số lớn rồi chia nhầm hoặc quên dấu âm của (−2)³."
+      }
+    ]
+  },
+  {
+    id: 3,
+    name: "Núi Thứ Tự & Chuyển Vế",
+    topic: "Thứ tự phép tính & Tìm x",
+    icon: "⛰️",
+    maxStars: 24,
+    questions: [
+      {
+        type: "fill",
+        q: `Tính giá trị biểu thức: 15 − 3 · 2 + 1 =`,
+        ansText: ["10"],
+        ansDisplay: "10",
+        hints: [
+          "Mức 1: Thực hiện phép nhân chia trước, cộng trừ sau.",
+          "Mức 2: Tính 3 · 2 = 6 trước.",
+          "Mức 3: Lấy 15 − 6 + 1 = 9 + 1."
+        ],
+        steps: `1. Nhân trước: 15 − 6 + 1.<br>2. Tính từ trái sang phải: 9 + 1 = 10.`,
+        mistake: "Tính từ trái sang phải (15 − 3 = 12, rồi 12 · 2 = 24) sai thứ tự."
+      },
+      {
+        type: "mc",
+        q: `Tìm x, biết: x + ${F('1', '3')} = ${F('5', '6')}.`,
+        options: [`x = ${F('1', '2')}`, `x = ${F('7', '6')}`, `x = ${F('1', '6')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Áp dụng quy tắc chuyển vế: chuyển +1/3 sang vế phải thành −1/3.",
+          "Mức 2: Quy đồng 1/3 = 2/6.",
+          "Mức 3: Tính 5/6 − 2/6 = 3/6 = 1/2."
+        ],
+        steps: `1. Chuyển vế: x = ${F('5', '6')} − ${F('1', '3')}.<br>2. Quy đồng và rút gọn: x = ${F('5', '6')} − ${F('2', '6')} = ${F('3', '6')} = ${F('1', '2')}.`,
+        mistake: "Chuyển vế nhưng quên đổi dấu +1/3 thành −1/3."
+      },
+      {
+        type: "mc",
+        q: `Tính: ${F('1', '2')} + ${F('3', '2')} · ${F('1', '3')}.`,
+        options: ["1", `${F('2', '3')}`, `${F('5', '6')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Thực hiện phép nhân hai phân số trước.",
+          "Mức 2: (3/2) · (1/3) = 1/2.",
+          "Mức 3: Lấy 1/2 + 1/2 = 1."
+        ],
+        steps: `1. Nhân trước: ${F('3', '2')} · ${F('1', '3')} = ${F('1', '2')}.<br>2. Cộng sau: ${F('1', '2')} + ${F('1', '2')} = 1.`,
+        mistake: "Cộng 1/2 + 3/2 = 2 trước rồi mới nhân với 1/3."
+      },
+      {
+        type: "mc",
+        q: `Tìm x, biết: x − ${F('3', '4')} = −${F('1', '2')}.`,
+        options: [`x = ${F('1', '4')}`, `x = −${F('5', '4')}`, `x = −${F('1', '4')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Chuyển −3/4 từ vế trái sang vế phải và đổi dấu thành +3/4.",
+          "Mức 2: x = −1/2 + 3/4 = −2/4 + 3/4.",
+          "Mức 3: −2 + 3 = 1, giữ nguyên mẫu 4."
+        ],
+        steps: `1. Chuyển vế: x = −${F('1', '2')} + ${F('3', '4')}.<br>2. Quy đồng: x = −${F('2', '4')} + ${F('3', '4')} = ${F('1', '4')}.`,
+        mistake: "Cộng nhầm −2/4 + 3/4 thành −5/4."
+      },
+      {
+        type: "mc",
+        q: `Tính: (−${F('1', '2')})³ + ${F('3', '4')} : ${F('1', '2')}.`,
+        options: [`${F('11', '8')}`, `−${F('13', '8')}`, `${F('13', '8')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Tính lũy thừa (−1/2)³ = −1/8 và phép chia (3/4) : (1/2) = 3/2 trước.",
+          "Mức 2: Quy đồng 3/2 = 12/8.",
+          "Mức 3: Tính −1/8 + 12/8 = 11/8."
+        ],
+        steps: `1. (−${F('1', '2')})³ = −${F('1', '8')} và ${F('3', '4')} : ${F('1', '2')} = ${F('3', '2')} = ${F('12', '8')}.<br>2. Tổng: −${F('1', '8')} + ${F('12', '8')} = ${F('11', '8')}.`,
+        mistake: "Tính lũy thừa bậc lẻ (−1/2)³ ra dấu dương +1/8."
+      },
+      {
+        type: "mc",
+        q: `Tìm x, biết: −${F('3', '4')}x = ${F('9', '8')}.`,
+        options: [`x = −${F('3', '2')}`, `x = ${F('3', '2')}`, `x = −${F('27', '32')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Muốn tìm thừa số chưa biết x, lấy tích chia cho thừa số đã biết.",
+          "Mức 2: x = (9/8) : (−3/4) = (9/8) · (−4/3).",
+          "Mức 3: Rút gọn chéo 9 với 3 và 4 với 8, giữ dấu trừ."
+        ],
+        steps: `1. x = ${F('9', '8')} : (−${F('3', '4')}) = ${F('9', '8')} · (−${F('4', '3')}).<br>2. Rút gọn: x = −${F('3', '2')}.`,
+        mistake: "Quên dấu trừ ở kết quả hoặc nhân nhầm không nghịch đảo."
+      },
+      {
+        type: "fill",
+        q: `Tìm x, biết: ${F('3', '4')} + ${F('1', '4')}x = −${F('1', '2')}. Nhập giá trị của x:`,
+        ansText: ["-5"],
+        ansDisplay: "x = −5",
+        hints: [
+          "Mức 1: Coi (1/4)x là một cụm, chuyển +3/4 sang vế phải thành −3/4.",
+          "Mức 2: (1/4)x = −1/2 − 3/4 = −5/4.",
+          "Mức 3: Chia cả hai vế cho 1/4 (tức nhân với 4)."
+        ],
+        steps: `1. Chuyển vế: ${F('1', '4')}x = −${F('1', '2')} − ${F('3', '4')} = −${F('5', '4')}.<br>2. Tìm x: x = (−${F('5', '4')}) : ${F('1', '4')} = −5.`,
+        mistake: "Cộng 3/4 + 1/4 = 1 trước khi nhân với x (sai thứ tự phép tính)."
+      },
+      {
+        type: "mc",
+        q: `Tìm x, biết: ${F('3', '4')} − (x + ${F('1', '2')}) = −${F('5', '8')}.`,
+        options: [`x = ${F('7', '8')}`, `x = −${F('7', '8')}`, `x = ${F('15', '8')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Giữ nguyên ngoặc (x + 1/2) đóng vai trò là số trừ.",
+          "Mức 2: x + 1/2 = 3/4 − (−5/8) = 6/8 + 5/8 = 11/8.",
+          "Mức 3: Chuyển +1/2 sang vế phải: x = 11/8 − 4/8 = 7/8."
+        ],
+        steps: `1. x + ${F('1', '2')} = ${F('3', '4')} − (−${F('5', '8')}) = ${F('6', '8')} + ${F('5', '8')} = ${F('11', '8')}.<br>2. x = ${F('11', '8')} − ${F('1', '2')} = ${F('11', '8')} − ${F('4', '8')} = ${F('7', '8')}.`,
+        mistake: "Lấy −5/8 − 3/4 (nhầm vị trí số bị trừ và số trừ)."
+      }
+    ]
+  },
+  {
+    id: 4,
+    name: "Lâu Đài Phong Ấn",
+    topic: "Tổng hợp & Chinh phục Boss Chương I",
+    icon: "🏯",
+    maxStars: 24,
+    questions: [
+      {
+        type: "mc",
+        q: `Kết quả của phép tính (${F('3', '4')} − ${F('1', '2')})² : ${F('1', '8')} + ${F('3', '2')} là:`,
+        options: ["2", `${F('7', '2')}`, `${F('5', '2')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Tính trong ngoặc trước: 3/4 − 1/2 = 1/4.",
+          "Mức 2: Nâng lên lũy thừa: (1/4)² = 1/16, sau đó chia cho 1/8 được 1/2.",
+          "Mức 3: Cộng với 3/2: 1/2 + 3/2 = 4/2 = 2."
+        ],
+        steps: `1. Trong ngoặc: ${F('3', '4')} − ${F('2', '4')} = ${F('1', '4')}.<br>2. Lũy thừa & chia: (${F('1', '4')})² : ${F('1', '8')} = ${F('1', '16')} · 8 = ${F('1', '2')}.<br>3. Cộng: ${F('1', '2')} + ${F('3', '2')} = 2.`,
+        mistake: "Tính nhầm (1/4)² = 1/8."
+      },
+      {
+        type: "mc",
+        q: `Tìm x, biết: (x − ${F('1', '2')})² = ${F('1', '4')}.`,
+        options: ["x = 1 hoặc x = 0", "x = 1", `x = ${F('3', '4')} hoặc x = ${F('1', '4')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Có hai số hữu tỉ bình phương lên bằng 1/4 là 1/2 và −1/2.",
+          "Mức 2: Chia làm 2 trường hợp: x − 1/2 = 1/2 hoặc x − 1/2 = −1/2.",
+          "Mức 3: Giải từng trường hợp tìm được x = 1 và x = 0."
+        ],
+        steps: `1. Vì ${F('1', '4')} = (${F('1', '2')})² = (−${F('1', '2')})² nên:<br>• TH1: x − ${F('1', '2')} = ${F('1', '2')} ⇒ x = 1.<br>• TH2: x − ${F('1', '2')} = −${F('1', '2')} ⇒ x = 0.`,
+        mistake: "Chỉ tìm ra một giá trị x = 1 mà bỏ sót nghiệm x = 0."
+      },
+      {
+        type: "mc",
+        q: `Tính giá trị biểu thức: [ (−${F('1', '3')})² + ${F('5', '9')} ] : (−1${F('1', '3')}) − (−${F('1', '2')})³.`,
+        options: [`−${F('3', '8')}`, `−${F('5', '8')}`, `${F('3', '8')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Trong ngoặc vuông: (−1/3)² + 5/9 = 1/9 + 5/9 = 6/9 = 2/3.",
+          "Mức 2: Chia cho −1(1/3) = −4/3: (2/3) : (−4/3) = −1/2.",
+          "Mức 3: Trừ đi (−1/2)³ = −1/8, tức là −1/2 + 1/8 = −3/8."
+        ],
+        steps: `1. Ngoặc vuông: ${F('1', '9')} + ${F('5', '9')} = ${F('2', '3')}.<br>2. Phép chia: ${F('2', '3')} : (−${F('4', '3')}) = −${F('1', '2')}.<br>3. Trừ lũy thừa: −${F('1', '2')} − (−${F('1', '8')}) = −${F('4', '8')} + ${F('1', '8')} = −${F('3', '8')}.`,
+        mistake: "Sai dấu ở phép trừ −1/2 − (−1/8)."
+      },
+      {
+        type: "mc",
+        q: `Tìm x, biết: −(x − ${F('1', '2')}) + ${F('3', '4')} = −${F('3', '4')}.`,
+        options: ["x = 2", "x = −2", `x = ${F('1', '2')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Phá ngoặc vế trái: −x + 1/2 + 3/4 = −3/4.",
+          "Mức 2: Chuyển các số sang vế phải: −x = −3/4 − 3/4 − 1/2.",
+          "Mức 3: −x = −6/4 − 2/4 = −8/4 = −2 ⇒ x = 2."
+        ],
+        steps: `1. Phá ngoặc: −x + ${F('1', '2')} + ${F('3', '4')} = −${F('3', '4')}.<br>2. Chuyển vế: −x = −${F('3', '4')} − ${F('3', '4')} − ${F('2', '4')} = −2 ⇒ x = 2.`,
+        mistake: "Quên đổi dấu −1/2 trong ngoặc khi phá dấu ngoặc có dấu trừ."
+      },
+      {
+        type: "mc",
+        q: `Tính nhanh: ${F('4', '9')} · (−${F('5', '7')}) + ${F('4', '9')} · (−${F('2', '7')}) + 1${F('4', '9')}.`,
+        options: ["1", `${F('13', '9')}`, `−${F('4', '9')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Đặt thừa số chung 4/9 ra ngoài cho hai tích đầu tiên.",
+          "Mức 2: 4/9 · (−5/7 − 2/7) = 4/9 · (−1) = −4/9.",
+          "Mức 3: Cộng với hỗn số 1(4/9) = 1 + 4/9."
+        ],
+        steps: `1. Đặt nhân tử chung: ${F('4', '9')} · (−${F('5', '7')} − ${F('2', '7')}) + 1 + ${F('4', '9')}.<br>2. Tính: ${F('4', '9')} · (−1) + 1 + ${F('4', '9')} = (−${F('4', '9')} + ${F('4', '9')}) + 1 = 1.`,
+        mistake: "Không nhận ra tính chất phân phối của phép nhân đối với phép cộng."
+      },
+      {
+        type: "mc",
+        q: `Tìm số nguyên x thỏa mãn: ${F('2', '3')} − ${F('5', '6')} ≤ x ≤ ${F('1', '2')} + ${F('3', '4')}.`,
+        options: ["x ∈ {0; 1}", "x ∈ {−1; 0; 1}", "x ∈ {0; 1; 2}"],
+        ans: 0,
+        hints: [
+          "Mức 1: Tính giá trị vế trái và vế phải trước.",
+          "Mức 2: Vế trái = 4/6 − 5/6 = −1/6. Vế phải = 2/4 + 3/4 = 5/4 = 1,25.",
+          "Mức 3: Các số nguyên x thỏa mãn −1/6 ≤ x ≤ 1,25 là 0 và 1."
+        ],
+        steps: `1. Tính hai biên: −${F('1', '6')} ≤ x ≤ ${F('5', '4')}.<br>2. Vì x ∈ ℤ nên x ∈ {0; 1}.`,
+        mistake: "Lấy nhầm số −1 hoặc số 2 vượt ngoài khoảng."
+      },
+      {
+        type: "mc",
+        q: `So sánh hai lũy thừa: 2³⁰ và 3²⁰.`,
+        options: ["2³⁰ < 3²⁰", "2³⁰ > 3²⁰", "2³⁰ = 3²⁰"],
+        ans: 0,
+        hints: [
+          "Mức 1: Đưa hai lũy thừa về cùng số mũ là 10.",
+          "Mức 2: 2³⁰ = (2³)¹⁰ = 8¹⁰ và 3²⁰ = (3²)¹⁰ = 9¹⁰.",
+          "Mức 3: So sánh cơ số 8 < 9 nên 8¹⁰ < 9¹⁰."
+        ],
+        steps: `1. Ta có 2³⁰ = (2³)¹⁰ = 8¹⁰ và 3²⁰ = (3²)¹⁰ = 9¹⁰.<br>2. Vì 8 < 9 nên 8¹⁰ < 9¹⁰, hay 2³⁰ < 3²⁰.`,
+        mistake: "Thấy số mũ 30 > 20 nên vội kết luận 2³⁰ > 3²⁰."
+      },
+      {
+        type: "mc",
+        q: `Tính giá trị biểu thức: B = (1 − ${F('1', '2')})(1 − ${F('1', '3')})(1 − ${F('1', '4')})...(1 − ${F('1', '2026')}).`,
+        options: [`${F('1', '2026')}`, `${F('2025', '2026')}`, `${F('1', '2025')}`],
+        ans: 0,
+        hints: [
+          "Mức 1: Viết kết quả của 3 ngoặc đầu tiên dưới dạng phân số.",
+          "Mức 2: B = (1/2) · (2/3) · (3/4) · ... · (2025/2026).",
+          "Mức 3: Tử của phân số trước rút gọn hết với mẫu của phân số sau."
+        ],
+        steps: `1. B = ${F('1', '2')} · ${F('2', '3')} · ${F('3', '4')} · ... · ${F('2025', '2026')}.<br>2. Rút gọn chéo toàn bộ tử và mẫu ở giữa ta còn ${F('1', '2026')}.`,
+        mistake: "Nhầm quy luật rút gọn giữ lại tử cuối cùng 2025."
+      }
+    ]
+  }
+];
 
-        // Chuyển sang câu tiếp theo hoặc màn hình nhận huy hiệu vùng
-        function nextQuestion() {
-            const currentStageIdx = QUESTIONS[state.currentQIndex].stage;
-            const isEndOfStage = ((state.currentQIndex + 1) % 8 === 0);
+const BADGES_DATA = [
+  { id: "b1", icon: "🌱", title: "Tân Binh Hữu Tỉ", desc: "Tạo nhân vật và bắt đầu hành trình" },
+  { id: "b2", icon: "🏡", title: "Người Bảo Vệ Làng ℚ", desc: "Hoàn thành Vùng đất 1" },
+  { id: "b3", icon: "🏰", title: "Bậc Thầy Tính Toán", desc: "Hoàn thành Vùng đất 2" },
+  { id: "b4", icon: "🌲", title: "Chinh Phục Rừng Ngoặc", desc: "Hoàn thành Vùng đất 3" },
+  { id: "b5", icon: "⛰️", title: "Chuyên Gia Tìm X", desc: "Hoàn thành Vùng đất 4" },
+  { id: "b6", icon: "👑", title: "Hiệp Sĩ Vương Quốc ℚ", desc: "Đánh bại Boss Lâu Đài Phong Ấn" }
+];
 
-            if (isEndOfStage) {
-                // Trao huy hiệu nếu đạt từ 4/8 câu trở lên ở vùng đó (hoặc hoàn thành vùng)
-                const stageCorrect = state.stageScores[currentStageIdx];
-                const stageInfo = STAGES[currentStageIdx];
-                if (stageCorrect >= 4) {
-                    state.unlockedBadges.push(stageInfo);
-                }
+// =========================================================================
+// 3. QUẢN LÝ TRẠNG THÁI NGƯỜI CHƠI (LƯU TỰ ĐỘNG VÀO LOCALSTORAGE ĐỂ CHƠI TIẾP)
+// =========================================================================
+let player = JSON.parse(localStorage.getItem('vqht_player_save')) || null;
 
-                // Nếu là câu cuối cùng (câu 40) -> sang màn hình tổng kết luôn
-                if (state.currentQIndex === QUESTIONS.length - 1) {
-                    showFinalResults();
-                    return;
-                }
+function savePlayer() {
+  if (player) {
+    localStorage.setItem('vqht_player_save', JSON.stringify(player));
+  }
+}
 
-                // Hiện màn hình chuyển vùng
-                document.getElementById('screen-game').classList.add('hidden');
-                document.getElementById('screen-stage-clear').classList.remove('hidden');
+function initApp() {
+  document.getElementById('disp-teacher').textContent = teacherConfig.teacherName;
+  document.getElementById('disp-school').textContent = teacherConfig.schoolName;
+  document.getElementById('cfg-teacher').value = teacherConfig.teacherName;
+  document.getElementById('cfg-school').value = teacherConfig.schoolName;
+  document.getElementById('cfg-script').value = teacherConfig.scriptUrl;
 
-                document.getElementById('stage-badge-icon').textContent = stageCorrect >= 4 ? stageInfo.badgeIcon : "⭐";
-                document.getElementById('stage-clear-title').textContent = `Hoàn thành ${stageInfo.name}!`;
-                document.getElementById('stage-clear-score').textContent = `${stageCorrect} / 8 câu đúng`;
+  if (player) {
+    document.getElementById('btn-continue').style.display = 'inline-flex';
+    document.getElementById('cont-name').textContent = player.name;
+  }
+}
 
-                if (stageCorrect >= 4) {
-                    document.getElementById('stage-clear-desc').innerHTML =
-                        `${stageInfo.story}<br>Em xuất sắc nhận được <strong>${stageInfo.badgeName}</strong>!`;
-                } else {
-                    document.getElementById('stage-clear-desc').innerHTML =
-                        `Em đã vượt qua ${stageInfo.name}. Hãy cố gắng đạt từ 4/8 câu đúng ở vùng tiếp theo để mở khóa Huy hiệu nhé!`;
-                }
-            } else {
-                state.currentQIndex++;
-                renderQuestion();
-            }
-        }
+function openNewCharModal() {
+  playSoundEffect('click');
+  document.getElementById('modal-newchar').classList.add('open');
+}
 
-        // Tiếp tục sang vùng tiếp theo
-        function continueNextStage() {
-            state.currentQIndex++;
-            document.getElementById('screen-stage-clear').classList.add('hidden');
-            document.getElementById('screen-game').classList.remove('hidden');
-            renderQuestion();
-        }
+function selectAvatar(el) {
+  playSoundEffect('click');
+  document.querySelectorAll('.av-opt').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
 
-        // Hiển thị màn hình Tổng kết & Tự động gửi điểm về Google Sheets
-        function showFinalResults() {
-            document.getElementById('screen-game').classList.add('hidden');
-            document.getElementById('screen-result').classList.remove('hidden');
+function createNewCharacter() {
+  const name = document.getElementById('inp-student-name').value.trim();
+  const cls = document.getElementById('inp-student-class').value.trim() || "7A";
+  if (!name) {
+    alert("Em hãy nhập Họ và tên của mình trước nhé!");
+    return;
+  }
+  const av = document.querySelector('.av-opt.selected').dataset.av;
+  player = {
+    name: name,
+    studentClass: cls,
+    avatar: av,
+    xp: 0,
+    level: 1,
+    coins: 50,
+    unlockedLand: 0,
+    landStars: [0, 0, 0, 0, 0],
+    totalCorrect: 0,
+    items: { hints: 2, fifty: 1, skip: 0, heal: 1 },
+    badges: ["b1"],
+    submitted: false
+  };
+  savePlayer();
+  closeModals();
+  enterHub();
+}
 
-            const hero = HEROES[state.heroIndex];
-            const grade10 = ((state.totalScore / 40) * 10).toFixed(2);
+function continueGame() {
+  playSoundEffect('click');
+  if (player) enterHub();
+}
 
-            document.getElementById('final-student-label').textContent =
-                `${hero.icon} ${state.studentName} • Lớp ${state.studentClass}`;
-            document.getElementById('final-score-big').textContent = `${state.totalScore} / 40`;
-            document.getElementById('final-grade-10').textContent = `Điểm hệ 10: ${grade10} điểm`;
+function goHome() {
+  playSoundEffect('click');
+  initApp();
+  showScreen('screen-home');
+}
 
-            // Xếp loại danh hiệu
-            let rankTitle = "";
-            let rankIcon = "";
-            if (state.totalScore >= 36) {
-                rankTitle = "Danh hiệu: Đại Hiệp Sĩ Số Hữu Tỉ (Xuất sắc)";
-                rankIcon = "👑";
-            } else if (state.totalScore >= 28) {
-                rankTitle = "Danh hiệu: Chiến Binh Tinh Nhuệ (Giỏi)";
-                rankIcon = "🎖️";
-            } else if (state.totalScore >= 20) {
-                rankTitle = "Danh hiệu: Nhà Thám Hiểm Triển Vọng (Khá)";
-                rankIcon = "🛡️";
-            } else {
-                rankTitle = "Danh hiệu: Tập Sự Vương Quốc (Cần ôn luyện thêm)";
-                rankIcon = "📘";
-            }
-            document.getElementById('final-rank-title').textContent = rankTitle;
-            document.getElementById('final-rank-icon').textContent = rankIcon;
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
 
-            // Hiển thị huy hiệu đạt được
-            const badgesList = document.getElementById('final-badges-list');
-            badgesList.innerHTML = "";
-            if (state.unlockedBadges.length === 0) {
-                badgesList.innerHTML = `<div class="col-span-2 text-sm text-slate-500 italic bg-slate-100 p-3 rounded-xl">Chưa mở khóa huy hiệu nào. Hãy chơi lại và đạt ít nhất 4/8 câu mỗi vùng nhé!</div>`;
-            } else {
-                state.unlockedBadges.forEach(b => {
-                    badgesList.innerHTML += `
-                        <div class="flex items-center gap-2.5 bg-amber-50 border border-amber-300 rounded-xl p-2.5">
-                            <span class="text-2xl">${b.badgeIcon}</span>
-                            <span class="text-xs sm:text-sm font-bold text-amber-900">${b.badgeName}</span>
-                        </div>
-                    `;
-                });
-            }
+function closeModals() {
+  document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('open'));
+}
 
-            // Hiển thị chi tiết điểm từng vùng
-            const breakdown = document.getElementById('final-breakdown');
-            breakdown.innerHTML = "";
-            STAGES.forEach((st, idx) => {
-                const sc = state.stageScores[idx];
-                const colorClass = sc >= 6 ? "text-emerald-600" : (sc >= 4 ? "text-blue-600" : "text-rose-600");
-                breakdown.innerHTML += `
-                    <div class="flex justify-between items-center border-b border-slate-200 pb-1.5 last:border-b-0 last:pb-0">
-                        <span class="font-medium text-slate-700">${st.topic}</span>
-                        <span class="font-extrabold ${colorClass}">${sc}/8 câu</span>
-                    </div>
-                `;
-            });
+function openTeacherModal() {
+  playSoundEffect('click');
+  document.getElementById('modal-teacher').classList.add('open');
+}
 
-            // Tự động gửi dữ liệu về Google Sheets của Thầy/Cô
-            submitResultsToSheet(false);
-        }
+function saveTeacherConfig() {
+  teacherConfig.teacherName = document.getElementById('cfg-teacher').value.trim() || "Trần Thị Thu Chẳng";
+  teacherConfig.schoolName = document.getElementById('cfg-school').value.trim() || "Trường THCS Nam Đàn";
+  teacherConfig.scriptUrl = document.getElementById('cfg-script').value.trim() || DEFAULT_SCRIPT_URL;
+  localStorage.setItem('vqht_teacher_cfg', JSON.stringify(teacherConfig));
+  initApp();
+  closeModals();
+  alert("Đã lưu cấu hình giáo viên!");
+}
 
-        // Gửi kết quả lên Google Apps Script
-        function submitResultsToSheet(isManualRetry) {
-            const statusBox = document.getElementById('submit-status-box');
-            const statusText = document.getElementById('submit-status-text');
+// =========================================================================
+// 4. MÀN HÌNH BẢN ĐỒ, CỬA HÀNG, HUY HIỆU & HỒ SƠ
+// =========================================================================
+function updateHud() {
+  if (!player) return;
+  player.level = Math.floor(player.xp / 100) + 1;
+  const currentXpInLevel = player.xp % 100;
 
-            statusBox.className = "rounded-2xl p-3.5 mb-4 border text-sm font-semibold flex items-center justify-center gap-2 bg-blue-50 border-blue-200 text-blue-800";
-            statusBox.innerHTML = `<span class="animate-spin">⏳</span> <span>${isManualRetry ? "Đang gửi lại kết quả..." : "Đang tự động nộp kết quả về cho Thầy/Cô..."}</span>`;
+  ['', 'q-'].forEach(prefix => {
+    document.getElementById(prefix + 'hud-avatar').textContent = player.avatar;
+    document.getElementById(prefix + 'hud-name').textContent = player.name;
+    document.getElementById(prefix + 'hud-lvl').textContent = `Cấp ${player.level}`;
+    document.getElementById(prefix + 'hud-xp-fill').style.width = `${currentXpInLevel}%`;
+    document.getElementById(prefix + 'hud-xp-text').textContent = `${currentXpInLevel}/100 XP`;
+    document.getElementById(prefix + 'hud-coins').textContent = player.coins;
+  });
 
-            const grade10 = ((state.totalScore / 40) * 10).toFixed(2);
-            const heroName = HEROES[state.heroIndex].name;
-            const badgeNames = state.unlockedBadges.length > 0
-                ? state.unlockedBadges.map(b => b.badgeName).join(", ")
-                : "Chưa có";
+  // Update profile tab
+  document.getElementById('prof-name').textContent = player.name;
+  document.getElementById('prof-class').textContent = player.studentClass;
+  const totalStars = player.landStars.reduce((a, b) => a + b, 0);
+  document.getElementById('prof-stars').textContent = `${totalStars}/120`;
+  document.getElementById('prof-correct').textContent = player.totalCorrect;
+}
 
-            const breakdownStr = STAGES.map((st, i) => `Dạng ${i + 1}: ${state.stageScores[i]}/8`).join(" | ");
+function enterHub() {
+  updateHud();
+  renderMap();
+  renderBadges();
+  showScreen('screen-hub');
+}
 
-            const payload = {
-                tenHocSinh: state.studentName,
-                lop: state.studentClass,
-                diemSo: `${state.totalScore}/40 (${grade10} điểm)`,
-                chiTiet: `Nhân vật: ${heroName} | Huy hiệu (${state.unlockedBadges.length}/5): ${badgeNames} | ${breakdownStr}`
-            };
+function switchTab(tabName, btnEl) {
+  playSoundEffect('click');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  btnEl.classList.add('active');
 
-            fetch(GOOGLE_SCRIPT_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: {
-                    "Content-Type": "text/plain;charset=utf-8"
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(() => {
-                statusBox.className = "rounded-2xl p-3.5 mb-4 border text-sm font-bold flex items-center justify-center gap-2 bg-emerald-50 border-emerald-300 text-emerald-800";
-                statusBox.innerHTML = `<span>✅</span> <span>Đã gửi kết quả thành công về bảng điểm của Thầy/Cô!</span>`;
-            })
-            .catch(() => {
-                statusBox.className = "rounded-2xl p-3.5 mb-4 border text-sm font-bold flex items-center justify-center gap-2 bg-rose-50 border-rose-300 text-rose-800";
-                statusBox.innerHTML = `<span>⚠️</span> <span>Mạng yếu, chưa gửi được. Em hãy bấm nút "Gửi lại kết quả" bên dưới!</span>`;
-            });
-        }
-    </script>
+  document.getElementById('tab-map').style.display = (tabName === 'map') ? 'flex' : 'none';
+  ['shop', 'badges', 'review', 'profile'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('active', t === tabName);
+  });
+  updateHud();
+}
+
+function renderMap() {
+  const mapEl = document.getElementById('tab-map');
+  mapEl.innerHTML = '';
+
+  LANDS.forEach((land, idx) => {
+    const isUnlocked = idx <= player.unlockedLand;
+    const isCurrent = idx === player.unlockedLand;
+    const node = document.createElement('div');
+    node.className = 'land-node';
+
+    node.innerHTML = `
+      <div class="land-circle ${isUnlocked ? '' : 'locked'}" onclick="selectLand(${idx})">
+        ${isUnlocked ? land.icon : '🔒'}
+        ${isCurrent ? `<div class="land-badge-char">${player.avatar}</div>` : ''}
+      </div>
+      <div class="land-label">${land.name}</div>
+      <div class="land-status ${isUnlocked ? '' : 'locked-txt'}">
+        ${isUnlocked ? `⭐ ${player.landStars[idx]}/${land.maxStars}` : 'Chưa mở'}
+      </div>
+    `;
+    mapEl.appendChild(node);
+  });
+}
+
+let selectedLandIdx = 0;
+
+function selectLand(idx) {
+  if (idx > player.unlockedLand) {
+    playSoundEffect('wrong');
+    alert("Em cần hoàn thành vùng đất trước đó để mở khóa vùng đất này nhé!");
+    return;
+  }
+  playSoundEffect('click');
+  selectedLandIdx = idx;
+  const land = LANDS[idx];
+  document.getElementById('modal-land-title').textContent = land.name;
+  document.getElementById('modal-land-desc').textContent = `${land.topic} (${land.questions.length} thử thách). Sai một câu mất một tim.`;
+  document.getElementById('modal-diff').classList.add('open');
+}
+
+function buyItem(itemKey, price) {
+  if (player.coins < price) {
+    playSoundEffect('wrong');
+    alert("Em chưa đủ vàng! Hãy chinh phục thêm các câu hỏi để kiếm vàng nhé.");
+    return;
+  }
+  playSoundEffect('correct');
+  player.coins -= price;
+  player.items[itemKey] += 1;
+  savePlayer();
+  updateHud();
+  alert("Mua vật phẩm thành công!");
+}
+
+function renderBadges() {
+  const list = document.getElementById('badges-list');
+  list.innerHTML = '';
+  BADGES_DATA.forEach(b => {
+    const has = player.badges.includes(b.id);
+    list.innerHTML += `
+      <div class="badge-item ${has ? 'unlocked' : ''}">
+        <div style="font-size:34px;">${b.icon}</div>
+        <div style="font-weight:900; font-size:15px; margin:4px 0;">${b.title}</div>
+        <div style="font-size:12px; color:#475569;">${b.desc}</div>
+      </div>
+    `;
+  });
+}
+
+// =========================================================================
+// 5. LOGIC CHƠI TỪNG ẢI, GỢI Ý 3 CẤP ĐỘ & CHẤM ĐIỂM TỪNG BƯỚC
+// =========================================================================
+let stageState = {
+  landIdx: 0,
+  diff: 'medium',
+  mult: 1.5,
+  qIndex: 0,
+  hearts: 5,
+  selectedOpt: null,
+  fillText: '',
+  hintLevel: 0,
+  answered: false,
+  results: [] // 'done' | 'wrong'
+};
+
+function startStage(diff) {
+  playSoundEffect('click');
+  closeModals();
+  const multMap = { easy: 1, medium: 1.5, hard: 2 };
+  const labelMap = { easy: 'Dễ', medium: 'Thường', hard: 'Khó' };
+
+  stageState = {
+    landIdx: selectedLandIdx,
+    diff: diff,
+    mult: multMap[diff],
+    diffLabel: labelMap[diff],
+    qIndex: 0,
+    hearts: 5,
+    selectedOpt: null,
+    fillText: '',
+    hintLevel: 0,
+    answered: false,
+    results: []
+  };
+
+  document.getElementById('stage-title-bar').textContent = `${LANDS[selectedLandIdx].name} • ${labelMap[diff]}`;
+  document.getElementById('q-diff-badge').textContent = labelMap[diff].toUpperCase();
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+function exitStage() {
+  if (confirm("Em muốn tạm dừng ải này để quay về bản đồ? Tiến trình chung của nhân vật vẫn được lưu.")) {
+    enterHub();
+  }
+}
+
+function renderQuestion() {
+  const land = LANDS[stageState.landIdx];
+  const q = land.questions[stageState.qIndex];
+
+  stageState.selectedOpt = null;
+  stageState.fillText = '';
+  stageState.hintLevel = 0;
+  stageState.answered = false;
+
+  // Hearts & Progress
+  document.getElementById('hearts-display').textContent = '❤️'.repeat(stageState.hearts) + '🖤'.repeat(5 - stageState.hearts);
+  const segEl = document.getElementById('progress-segments');
+  segEl.innerHTML = '';
+  land.questions.forEach((_, i) => {
+    let cls = 'seg';
+    if (stageState.results[i]) cls += ' ' + stageState.results[i];
+    else if (i === stageState.qIndex) cls += ' current';
+    segEl.innerHTML += `<div class="${cls}"></div>`;
+  });
+
+  // Question Content
+  document.getElementById('q-text').innerHTML = `Câu ${stageState.qIndex + 1}: ${q.q}`;
+  document.getElementById('hint-box').classList.remove('show');
+  document.getElementById('hint-box').innerHTML = '';
+  document.getElementById('result-panel').classList.remove('show');
+
+  const checkBtn = document.getElementById('btn-check-answer');
+  checkBtn.style.display = 'inline-flex';
+  checkBtn.disabled = true;
+
+  // Powerups UI
+  document.getElementById('hint-level-txt').textContent = '0/3';
+  document.getElementById('pu-hint-count').textContent = `${player.items.hints} miễn phí`;
+  document.getElementById('pu-fifty-count').textContent = player.items.fifty;
+  document.getElementById('pu-skip-count').textContent = player.items.skip;
+  document.getElementById('pu-heal-count').textContent = player.items.heal;
+
+  document.getElementById('pu-hint').disabled = false;
+  document.getElementById('pu-fifty').disabled = (q.type !== 'mc' || player.items.fifty <= 0);
+  document.getElementById('pu-skip').disabled = (player.items.skip <= 0);
+  document.getElementById('pu-heal').disabled = (player.items.heal <= 0 || stageState.hearts >= 5);
+
+  if (q.type === 'mc') {
+    document.getElementById('q-type-label').textContent = 'TRẮC NGHIỆM';
+    document.getElementById('mc-area').style.display = 'flex';
+    document.getElementById('fill-area').style.display = 'none';
+
+    const mcArea = document.getElementById('mc-area');
+    mcArea.innerHTML = '';
+    const letters = ['A', 'B', 'C', 'D'];
+    q.options.forEach((optHtml, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.innerHTML = `<span class="opt-letter">${letters[idx]}</span><span>${optHtml}</span>`;
+      btn.onclick = () => selectOption(idx, btn);
+      mcArea.appendChild(btn);
+    });
+  } else {
+    document.getElementById('q-type-label').textContent = 'ĐIỀN ĐÁP SỐ';
+    document.getElementById('mc-area').style.display = 'none';
+    document.getElementById('fill-area').style.display = 'block';
+    updateFillDisplay();
+  }
+}
+
+function selectOption(idx, btnEl) {
+  if (stageState.answered) return;
+  playSoundEffect('click');
+  stageState.selectedOpt = idx;
+  document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+  btnEl.classList.add('selected');
+  document.getElementById('btn-check-answer').disabled = false;
+}
+
+function pressKey(k) {
+  if (stageState.answered) return;
+  playSoundEffect('click');
+  if (k === 'BACK') {
+    stageState.fillText = stageState.fillText.slice(0, -1);
+  } else if (stageState.fillText.length < 10) {
+    stageState.fillText += k;
+  }
+  updateFillDisplay();
+}
+
+function updateFillDisplay() {
+  const txt = stageState.fillText;
+  document.getElementById('fill-input-box').textContent = txt;
+  let previewHtml = txt;
+  if (txt.includes('/')) {
+    const parts = txt.split('/');
+    if (parts.length === 2 && parts[0] !== '' && parts[1] !== '') {
+      previewHtml = F(parts[0], parts[1]);
+    }
+  }
+  document.getElementById('fill-preview-box').innerHTML = `Em viết: ${previewHtml || '...'}`;
+  document.getElementById('btn-check-answer').disabled = (txt.trim().length === 0);
+}
+
+// Gợi ý 3 cấp độ
+function useHint() {
+  if (stageState.answered) return;
+  const q = LANDS[stageState.landIdx].questions[stageState.qIndex];
+  if (stageState.hintLevel >= 3) return;
+
+  // Mức 1 miễn phí hoặc dùng cuộn gợi ý; mức 2 & 3 trừ cuộn gợi ý nếu có
+  if (stageState.hintLevel > 0 && player.items.hints > 0) {
+    player.items.hints -= 1;
+    savePlayer();
+    document.getElementById('pu-hint-count').textContent = `${player.items.hints} miễn phí`;
+  }
+
+  playSoundEffect('click');
+  const hintBox = document.getElementById('hint-box');
+  hintBox.classList.add('show');
+  hintBox.innerHTML += `<div class="hint-step">💡 <b>${q.hints[stageState.hintLevel]}</b></div>`;
+
+  stageState.hintLevel += 1;
+  document.getElementById('hint-level-txt').textContent = `${stageState.hintLevel}/3`;
+  if (stageState.hintLevel >= 3) {
+    document.getElementById('pu-hint').disabled = true;
+  }
+}
+
+function useFiftyFifty() {
+  const q = LANDS[stageState.landIdx].questions[stageState.qIndex];
+  if (q.type !== 'mc' || player.items.fifty <= 0 || stageState.answered) return;
+  playSoundEffect('click');
+  player.items.fifty -= 1;
+  savePlayer();
+  document.getElementById('pu-fifty-count').textContent = player.items.fifty;
+  document.getElementById('pu-fifty').disabled = true;
+
+  const btns = document.querySelectorAll('.opt-btn');
+  let eliminated = 0;
+  btns.forEach((b, i) => {
+    if (i !== q.ans && eliminated < 1) {
+      b.classList.add('eliminated');
+      eliminated++;
+    }
+  });
+}
+
+function useSkip() {
+  if (player.items.skip <= 0 || stageState.answered) return;
+  playSoundEffect('click');
+  player.items.skip -= 1;
+  savePlayer();
+  stageState.results[stageState.qIndex] = 'done';
+  nextQuestion();
+}
+
+function useHeal() {
+  if (player.items.heal <= 0 || stageState.hearts >= 5) return;
+  playSoundEffect('correct');
+  player.items.heal -= 1;
+  stageState.hearts += 1;
+  savePlayer();
+  document.getElementById('pu-heal-count').textContent = player.items.heal;
+  document.getElementById('hearts-display').textContent = '❤️'.repeat(stageState.hearts) + '🖤'.repeat(5 - stageState.hearts);
+  if (stageState.hearts >= 5 || player.items.heal <= 0) {
+    document.getElementById('pu-heal').disabled = true;
+  }
+}
+
+// Bấm KIỂM TRA mới chấm điểm và hiện lời giải từng bước
+function checkAnswer() {
+  if (stageState.answered) return;
+  stageState.answered = true;
+
+  const land = LANDS[stageState.landIdx];
+  const q = land.questions[stageState.qIndex];
+  let isCorrect = false;
+  let correctDisplayHtml = '';
+
+  if (q.type === 'mc') {
+    isCorrect = (stageState.selectedOpt === q.ans);
+    correctDisplayHtml = q.options[q.ans];
+    const btns = document.querySelectorAll('.opt-btn');
+    btns.forEach((b, idx) => {
+      if (idx === q.ans) b.classList.add('correct');
+      else if (idx === stageState.selectedOpt && !isCorrect) b.classList.add('incorrect');
+    });
+  } else {
+    const cleanInput = stageState.fillText.replace(/\s+/g, '').replace('−', '-');
+    isCorrect = q.ansText.includes(cleanInput);
+    correctDisplayHtml = q.ansDisplay;
+  }
+
+  document.getElementById('btn-check-answer').style.display = 'none';
+  const resPanel = document.getElementById('result-panel');
+  resPanel.classList.add('show');
+
+  if (isCorrect) {
+    playSoundEffect('correct');
+    stageState.results[stageState.qIndex] = 'done';
+    const gainXp = Math.round(10 * stageState.mult);
+    const gainCoins = Math.round(4 * stageState.mult);
+
+    player.xp += gainXp;
+    player.coins += gainCoins;
+    player.totalCorrect += 1;
+
+    resPanel.className = 'result-panel show ok';
+    document.getElementById('res-title').innerHTML = '✅ Tuyệt vời!';
+    document.getElementById('res-rewards').innerHTML = `<span class="rew-pill">+${gainXp} XP</span><span class="rew-pill">+${gainCoins} 🪙</span>`;
+    document.getElementById('res-mistake').style.display = 'none';
+  } else {
+    playSoundEffect('wrong');
+    stageState.results[stageState.qIndex] = 'wrong';
+    stageState.hearts = Math.max(0, stageState.hearts - 1);
+    document.getElementById('hearts-display').textContent = '❤️'.repeat(stageState.hearts) + '🖤'.repeat(5 - stageState.hearts);
+
+    resPanel.className = 'result-panel show bad';
+    document.getElementById('res-title').innerHTML = '❌ Chưa chính xác!';
+    document.getElementById('res-rewards').innerHTML = `<span class="rew-pill">−1 ❤️</span>`;
+
+    const mistakeBox = document.getElementById('res-mistake');
+    mistakeBox.style.display = 'block';
+    mistakeBox.innerHTML = `⚠️ <b>Lỗi sai thường gặp:</b> ${q.mistake}`;
+  }
+
+  document.getElementById('res-correct-ans').innerHTML = `<b>Đáp án đúng:</b> ${correctDisplayHtml}`;
+  document.getElementById('res-explanation').innerHTML = `<b>Lời giải từng bước:</b><br>${q.steps}`;
+
+  savePlayer();
+  updateHud();
+  resPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function nextQuestion() {
+  playSoundEffect('click');
+  const land = LANDS[stageState.landIdx];
+
+  if (stageState.hearts <= 0) {
+    alert("Hiệp sĩ đã hết tim rồi! Hãy nghỉ ngơi hoặc vào Cửa hàng mua Bình hồi máu rồi thử sức lại nhé!");
+    enterHub();
+    return;
+  }
+
+  if (stageState.qIndex + 1 < land.questions.length) {
+    stageState.qIndex += 1;
+    renderQuestion();
+  } else {
+    finishStage();
+  }
+}
+
+function finishStage() {
+  playSoundEffect('win');
+  const landIdx = stageState.landIdx;
+  const correctCount = stageState.results.filter(r => r === 'done').length;
+
+  // Tính sao đạt được dựa trên mức độ & số câu đúng
+  const starBonus = stageState.diff === 'hard' ? 3 : (stageState.diff === 'medium' ? 2 : 1);
+  const earnedStars = Math.min(24, correctCount * starBonus);
+  if (earnedStars > player.landStars[landIdx]) {
+    player.landStars[landIdx] = earnedStars;
+  }
+
+  // Mở khóa vùng đất tiếp theo & trao huy hiệu
+  const badgeIds = ["b2", "b3", "b4", "b5", "b6"];
+  if (correctCount >= 5) {
+    if (!player.badges.includes(badgeIds[landIdx])) {
+      player.badges.push(badgeIds[landIdx]);
+    }
+    if (landIdx === player.unlockedLand && player.unlockedLand < LANDS.length - 1) {
+      player.unlockedLand += 1;
+    }
+  }
+
+  savePlayer();
+
+  // Tự động gửi tiến độ về Google Sheets của giáo viên
+  submitResultsToSheet(true);
+
+  alert(`🎉 Chúc mừng ${player.name} đã hoàn thành ${LANDS[landIdx].name}!
+• Số câu đúng: ${correctCount}/8
+• Sao đạt được: ${player.landStars[landIdx]}/24 ⭐
+• Kết quả đã được tự động gửi về cho Thầy/Cô!`);
+  enterHub();
+}
+
+// =========================================================================
+// 6. GỬI KẾT QUẢ VỀ GOOGLE SHEETS QUA APPS SCRIPT (/EXEC)
+// =========================================================================
+function submitResultsToSheet(isSilent = false) {
+  if (!player) return;
+  const url = teacherConfig.scriptUrl || DEFAULT_SCRIPT_URL;
+  const totalStars = player.landStars.reduce((a, b) => a + b, 0);
+  const statusEl = document.getElementById('submit-status');
+
+  if (!isSilent && statusEl) {
+    statusEl.style.color = '#2563eb';
+    statusEl.textContent = '⏳ Đang gửi kết quả lên hệ thống của Thầy/Cô...';
+  }
+
+  const payload = {
+    tenHocSinh: player.name,
+    lop: player.studentClass,
+    diemSo: `${totalStars}/120 sao (${player.totalCorrect} câu đúng)`,
+    chiTiet: `Cấp ${player.level} | XP: ${player.xp} | Vàng: ${player.coins} | Huy hiệu: ${player.badges.length}/6 | Sao từng vùng: [${player.landStars.join(', ')}]`
+  };
+
+  fetch(url, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    if (!isSilent && statusEl) {
+      playSoundEffect('correct');
+      statusEl.style.color = '#15803d';
+      statusEl.textContent = '✅ Đã nộp bài thành công về bảng điểm của Giáo viên!';
+    }
+  })
+  .catch(() => {
+    if (!isSilent && statusEl) {
+      statusEl.style.color = '#dc2626';
+      statusEl.textContent = '⚠️ Lỗi kết nối mạng, em hãy thử bấm nộp lại nhé!';
+    }
+  });
+}
+
+// Khởi chạy ứng dụng
+initApp();
+</script>
 </body>
 </html>
