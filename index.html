@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vương quốc Số Hữu Tỉ</title>
+<style>
+:root{--bg:#fff8e7;--c:#2b2250;--p:#6c4ad0;--card:#fff;--bd:#d9cdf5;--ok:#e6f6ea;--no:#fdeaea;--wn:#fff3d6}
+@media(prefers-color-scheme:dark){:root{--bg:#1b1630;--c:#f3eefc;--p:#9b84f0;--card:#2a2347;--bd:#4a3f7a;--ok:#1d3a28;--no:#4a2020;--wn:#4a3b14}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--c);font:19px/1.55 system-ui,"Segoe UI",Roboto,Arial,sans-serif}
+#app{max-width:560px;margin:auto;padding:14px}
+h1{font-size:1.6em;margin:.2em 0}h2{margin:.3em 0}
+.c{background:var(--card);border:2px solid var(--bd);border-radius:16px;padding:14px;margin:12px 0}
+.ok{background:var(--ok)}.no{background:var(--no)}.wn{background:var(--wn)}
+.big{font-size:2.2em;line-height:1.2}.s{font-size:.8em;opacity:.8}
+.q{font-size:1.25em;font-weight:600;margin-top:6px}
+input{width:100%;font:inherit;padding:12px;margin:6px 0;border:2px solid var(--bd);border-radius:12px;background:var(--card);color:var(--c)}
+.b,.o,.z{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;font:inherit;font-weight:600;padding:14px;margin:8px 0;border-radius:14px;border:2px solid var(--p);background:var(--card);color:var(--c);cursor:pointer;text-align:left}
+.b{background:var(--p);color:#fff;justify-content:center}
+.z{justify-content:flex-start}.z.lk{opacity:.5}
+.o{justify-content:center;font-size:1.15em}
+.f{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 2px;font-size:.95em;line-height:1.15}
+.f b{font-weight:inherit;padding:0 3px}.f b:first-child{border-bottom:2px solid currentColor}
+ol{padding-left:22px;margin:6px 0}li{margin:4px 0}
+.bar{height:10px;background:var(--bd);border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;background:var(--p)}
+</style></head><body><div id="app"></div>
+<script>
+// DÁN LINK APPS SCRIPT (kết thúc bằng /exec) VÀO ĐÂY:
+const URL_SHEET="https://script.google.com/macros/s/AKfycbwMFh0u-kp8b6ntqA7Q290V3mV3zOMUP0TECzspB8An9kW0RRoG7cbv-IsMRqlE2rZA/exec";
+
+const Z=[
+{n:"Thung lũng So Sánh",i:"🏞️",b:"Cán Cân Vàng",bi:"⚖️",s:"Phù Thủy Sai Dấu đã làm lệch các cán cân. Hãy đặt lại dấu <, >, = cho đúng!",q:[
+["So sánh 3/5 và 4/5","<","Nhầm chiều dấu. Cùng mẫu dương thì tử lớn hơn là phân số lớn hơn.","Hai phân số cùng mẫu 5 > 0|Có 3 < 4 nên 3/5 < 4/5"],
+["So sánh -2/7 và -5/7",">","Thấy 2 < 5 nên kết luận -2/7 < -5/7. Với số âm thì ngược lại.","Cùng mẫu 7, so hai tử: -2 và -5|-2 > -5 nên -2/7 > -5/7"],
+["So sánh 1/2 và 2/3","<","So tử với tử, mẫu với mẫu mà không quy đồng.","Quy đồng mẫu 6: 3/6 và 4/6|3/6 < 4/6 nên 1/2 < 2/3"],
+["So sánh -3/4 và -4/5",">","Quy đồng đúng (-15/20 và -16/20) nhưng kết luận ngược chiều.","Quy đồng mẫu 20: -15/20 và -16/20|-15 > -16 nên -3/4 > -4/5"],
+["So sánh -0,6 và -3/5","=","Không đổi số thập phân về phân số.","-0,6 = -6/10 = -3/5|Hai số bằng nhau"],
+["So sánh -7/9 và 5/-6",">","Không đưa dấu âm lên tử số trước khi so sánh.","5/-6 = -5/6|Quy đồng mẫu 18: -14/18 và -15/18|-14 > -15 nên -7/9 > -5/6"],
+["Sắp xếp tăng dần: -1/2; 1/4; -2/3; 1/3","-2/3 < -1/2 < 1/4 < 1/3",["-1/2 < -2/3 < 1/4 < 1/3","-2/3 < -1/2 < 1/3 < 1/4","1/4 < 1/3 < -1/2 < -2/3"],"Xếp số âm theo giá trị tuyệt đối (số âm có giá trị tuyệt đối lớn hơn thì nhỏ hơn).","Quy đồng mẫu 12: -6/12; 3/12; -8/12; 4/12|Xếp: -8 < -6 < 3 < 4|Vậy -2/3 < -1/2 < 1/4 < 1/3"],
+["So sánh -17/18 và -18/19",">","Chỉ nhìn tử hoặc mẫu, bỏ qua dấu âm.","17/18 = 1 - 1/18 và 18/19 = 1 - 1/19|1/18 > 1/19 nên 17/18 < 18/19|Đổi dấu: -17/18 > -18/19"]]},
+{n:"Rừng Bốn Phép Tính",i:"🌲",b:"Chiếc Lá Bốn Cánh",bi:"🍀",s:"Cây cối trong rừng đã quên cách cộng, trừ, nhân, chia. Hãy nhắc chúng nhé!",q:[
+["1/5 + 2/5","3/5",["3/10","2/5","1/5"],"Cộng cả mẫu: 1/5 + 2/5 = 3/10 là sai. Cùng mẫu thì giữ nguyên mẫu.","Cùng mẫu 5: cộng tử, giữ mẫu|(1+2)/5 = 3/5"],
+["-3/8 + 5/8","1/4",["2/8","-1/4","1/2"],"Không rút gọn 2/8 về 1/4.","(-3+5)/8 = 2/8|Rút gọn chia cho 2: 1/4"],
+["1/2 - 3/4","-1/4",["1/4","-1/2","5/4"],"Lấy 3/4 - 1/2 rồi quên dấu âm.","Quy đồng mẫu 4: 2/4 - 3/4|(2-3)/4 = -1/4"],
+["-2/3 + 5/6","1/6",["3/9","-1/6","7/6"],"Đổi mẫu mà không nhân cả tử.","Quy đồng mẫu 6: -4/6 + 5/6|(-4+5)/6 = 1/6"],
+["(-3/4) · (8/9)","-2/3",["2/3","-3/2","-11/13"],"Sai dấu của tích: âm nhân dương ra âm.","Âm nhân dương ra âm|3·8 = 24 và 4·9 = 36, 24/36 = 2/3|Kết quả -2/3"],
+["(-5/6) : (10/3)","-1/4",["-25/9","1/4","-4"],"Không đảo ngược phân số chia.","Chia là nhân với nghịch đảo: (-5/6) · (3/10)|= -15/60 = -1/4"],
+["-1/3 - (-3/4)","5/12",["-13/12","13/12","-5/12"],"Trừ số âm mà không đổi thành cộng.","-1/3 - (-3/4) = -1/3 + 3/4|= -4/12 + 9/12 = 5/12"],
+["(-2/3) · (9/4) : (-3/2)","1",["-1","3/2","1/9"],"Làm chia trước nhân, hoặc sai dấu khi chia cho số âm.","Làm từ trái sang phải|(-2/3) · (9/4) = -18/12 = -3/2|(-3/2) : (-3/2) = 1"]]},
+{n:"Núi Dấu Ngoặc",i:"⛰️",b:"Chiếc Chìa Khóa Ngoặc",bi:"🗝️",s:"Cánh cổng núi bị khóa bởi những dấu ngoặc. Bỏ ngoặc đúng quy tắc để mở khóa!",q:[
+["2/5 + (3/5 - 1)","0",["-6/5","2","6/5"],"Đổi dấu khi bỏ ngoặc đứng sau dấu +. Sau dấu + thì giữ nguyên dấu.","Bỏ ngoặc sau dấu +, giữ nguyên dấu: 2/5 + 3/5 - 1|= 1 - 1 = 0"],
+["3/4 - (1/4 + 2)","-3/2",["5/2","-1/2","3/2"],"Chỉ đổi dấu số hạng đầu trong ngoặc.","Bỏ ngoặc sau dấu -, đổi dấu mọi số hạng: 3/4 - 1/4 - 2|= 1/2 - 2 = -3/2"],
+["1/3 - (1/3 - 5/6)","5/6",["-5/6","1/3","7/6"],"Không đổi dấu số hạng thứ hai.","1/3 - 1/3 + 5/6|= 0 + 5/6 = 5/6"],
+["(7/8 - 3/5) - (1/8 + 2/5)","-1/4",["4/5","1/4","-1/2"],"Bỏ ngoặc thứ hai mà không đổi dấu.","7/8 - 3/5 - 1/8 - 2/5|(7/8 - 1/8) - (3/5 + 2/5) = 3/4 - 1|= -1/4"],
+["-(-1/2 + 3/4) + (1/4 - 1/2)","-1/2",["0","1/2","-1"],"Dấu - trước ngoặc thì phải đổi dấu cả hai số hạng trong ngoặc.","1/2 - 3/4 + 1/4 - 1/2|(1/2 - 1/2) + (-3/4 + 1/4) = -1/2"],
+["5/9 - (3/7 + 5/9)","-3/7",["3/7","-10/9","5/9"],"Không nhận ra 5/9 và -5/9 triệt tiêu nhau.","5/9 - 3/7 - 5/9|5/9 - 5/9 = 0 nên còn lại -3/7"],
+["-(3/5 - 7/4) - (2/5 - 3/4)","3/2",["-3/2","1/2","-1/2"],"Sai dấu khi bỏ hai ngoặc liên tiếp.","-3/5 + 7/4 - 2/5 + 3/4|(-3/5 - 2/5) + (7/4 + 3/4) = -1 + 5/2|= 3/2"],
+["1 - [2/3 - (1/2 - 3/4)]","1/12",["-1/12","7/12","11/12"],"Bỏ ngoặc không theo thứ tự từ trong ra ngoài.","Ngoặc tròn trước: 1/2 - 3/4 = -1/4|2/3 - (-1/4) = 2/3 + 1/4 = 11/12|1 - 11/12 = 1/12"]]},
+{n:"Tháp Thứ Tự",i:"🏰",b:"Vương Miện Thứ Tự",bi:"👑",s:"Các tầng tháp bị xáo trộn. Làm đúng thứ tự phép tính để leo lên đỉnh!",q:[
+["1/2 + 1/3 · 3/2","1",["5/4","5/12","3/4"],"Cộng trước nhân sau. Phải nhân chia trước, cộng trừ sau.","Nhân trước: 1/3 · 3/2 = 1/2|1/2 + 1/2 = 1"],
+["3/4 - 1/2 : 2/3","0",["3/8","1/2","3/4"],"Trừ trước chia sau.","Chia trước: 1/2 : 2/3 = 1/2 · 3/2 = 3/4|3/4 - 3/4 = 0"],
+["(-1/2)^2 + 1/4","1/2",["0","-1/2","3/4"],"Tính (-1/2)^2 = -1/4. Số mũ chẵn thì kết quả dương.","(-1/2)^2 = 1/4|1/4 + 1/4 = 1/2"],
+["2/3 · (1/2 - 5/6)","-2/9",["2/9","-1/2","-1/3"],"Nhân trước khi tính trong ngoặc.","Trong ngoặc: 1/2 - 5/6 = 3/6 - 5/6 = -1/3|2/3 · (-1/3) = -2/9"],
+["(-2/3)^3 · 9/4","-2/3",["2/3","-3/2","1/6"],"Tính (-2/3)^3 = 8/27. Số mũ lẻ thì kết quả âm.","(-2/3)^3 = -8/27|-8/27 · 9/4 = -72/108 = -2/3"],
+["3/5 - (-1/2)^2 : 5/4","2/5",["7/25","1/5","-2/5"],"Trừ trước lũy thừa và chia.","Lũy thừa: (-1/2)^2 = 1/4|Chia: 1/4 : 5/4 = 1/5|3/5 - 1/5 = 2/5"],
+["[(-3/2)^2 - 1] : 5/8","2",["-26/5","1/2","-2"],"Nhầm (-3/2)^2 = -9/4.","(-3/2)^2 = 9/4|9/4 - 1 = 5/4|5/4 : 5/8 = 5/4 · 8/5 = 2"],
+["1/2 - [(-1/3)^2 + 2/3 · (-1/2)]","13/18",["5/18","-13/18","1/2"],"Làm sai thứ tự trong ngoặc vuông: phải nhân trước, cộng sau.","(-1/3)^2 = 1/9 và 2/3 · (-1/2) = -1/3|Trong ngoặc: 1/9 - 1/3 = -2/9|1/2 - (-2/9) = 1/2 + 2/9 = 13/18"]]},
+{n:"Đền Tìm x",i:"🏛️",b:"Kính Viễn Vọng x",bi:"🔭",s:"Số x bí ẩn đang trốn trong đền. Dùng quy tắc chuyển vế để tìm ra nó!",q:[
+["x + 1/3 = 5/6","x = 1/2",["x = 7/6","x = 1/6","x = -1/2"],"Chuyển vế mà không đổi dấu.","Chuyển +1/3 sang vế phải thành -1/3|x = 5/6 - 1/3 = 5/6 - 2/6 = 1/2"],
+["x - 2/5 = 3/10","x = 7/10",["x = -1/10","x = 1/10","x = 1/2"],"Chuyển -2/5 sang vế phải mà vẫn giữ dấu -.","Chuyển -2/5 sang vế phải thành +2/5|x = 3/10 + 4/10 = 7/10"],
+["3/4 - x = 1/2","x = 1/4",["x = 5/4","x = -1/4","x = 1/2"],"Viết x = 3/4 + 1/2.","x = 3/4 - 1/2|x = 3/4 - 2/4 = 1/4"],
+["-x + 2/3 = -1/6","x = 5/6",["x = -5/6","x = 1/2","x = -1/2"],"Tìm ra -x = -5/6 nhưng quên đổi thành x.","-x = -1/6 - 2/3 = -1/6 - 4/6 = -5/6|Đổi dấu hai vế: x = 5/6"],
+["x + 3/4 = 1/8 - 1/2","x = -9/8",["x = 9/8","x = -3/8","x = 7/8"],"Không tính vế phải trước khi chuyển vế.","Vế phải: 1/8 - 1/2 = 1/8 - 4/8 = -3/8|x = -3/8 - 3/4 = -3/8 - 6/8 = -9/8"],
+["2/3 - (x + 1/2) = 1/4","x = -1/12",["x = 1/12","x = 11/12","x = -5/12"],"Bỏ ngoặc mà không đổi dấu x và 1/2.","Bỏ ngoặc, đổi dấu: 2/3 - x - 1/2 = 1/4|1/6 - x = 1/4|x = 1/6 - 1/4 = 2/12 - 3/12 = -1/12"],
+["-3/5 - x = 1/2 - 7/10","x = -2/5",["x = 2/5","x = -4/5","x = 4/5"],"Sai dấu khi chuyển vế và khi đổi -x thành x.","Vế phải: 1/2 - 7/10 = 5/10 - 7/10 = -1/5|-x = -1/5 + 3/5 = 2/5|x = -2/5"],
+["5/6 - (x - 1/3) = 1/2 + 1/4","x = 5/12",["x = -5/12","x = 1/12","x = 7/12"],"Bỏ ngoặc có dấu - đứng trước mà không đổi dấu.","Vế phải: 1/2 + 1/4 = 3/4|Bỏ ngoặc: 5/6 - x + 1/3 = 3/4, tức 7/6 - x = 3/4|x = 7/6 - 3/4 = 14/12 - 9/12 = 5/12"]]}
+];
+Z[0].q=Z[0].q.map(q=>q.length==4?[q[0],q[1],[],q[2],q[3]]:q);
+
+const E=t=>String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const F=t=>E(t).replace(/-/g,"−").replace(/(−?\d+)\/(−?\d+)/g,"<span class=f><b>$1</b><b>$2</b></span>").replace(/\^(\d)/g,"<sup>$1</sup>");
+const A=h=>{document.getElementById("app").innerHTML=h;scrollTo(0,0)};
+let S,cz,qi,cor,cur,T=Date.now();
+const pts=()=>S.sc.reduce((a,b)=>a+b,0)*10;
+const save=()=>{try{localStorage.setItem("vqs",JSON.stringify(S))}catch(e){}};
+
+function home(){
+ let o={};try{o=JSON.parse(localStorage.getItem("vqs"))||{}}catch(e){}
+ A(`<div class=c style="text-align:center"><div class=big>🛡️🦊</div><h1>Vương quốc Số Hữu Tỉ</h1><p>Phù Thủy Sai Dấu đã đảo lộn mọi dấu âm dương! Em là <b>Hiệp sĩ Hữu Tỉ</b>, cùng chú cáo <b>Phân Số</b> đi qua 5 vùng đất, giải 8 thử thách mỗi vùng để lấy lại huy hiệu.</p>
+ <input id=nm placeholder="Họ và tên" value="${E(o.name||"")}"><input id=cl placeholder="Lớp (ví dụ 7A)" value="${E(o.cls||"")}">
+ <button class=b onclick=go()>Bắt đầu hành trình ➜</button><p class=s>Chỉ nhập họ tên và lớp, không nhập thông tin riêng tư khác. Nên làm bài trên giấy nháp.</p></div>`)}
+
+function go(){
+ const n=document.getElementById("nm").value.trim(),c=document.getElementById("cl").value.trim();
+ if(!n||!c){alert("Em hãy nhập họ tên và lớp nhé!");return}
+ let o={};try{o=JSON.parse(localStorage.getItem("vqs"))||{}}catch(e){}
+ S=(o.name==n&&o.cls==c&&o.sc)?o:{name:n,cls:c,sc:[0,0,0,0,0],bd:[0,0,0,0,0],wr:Array(40).fill(0),sec:0};
+ save();map()}
+
+function map(){
+ let h=`<h2>🗺️ Bản đồ vương quốc</h2><div class=c>Hiệp sĩ <b>${E(S.name)}</b> (lớp ${E(S.cls)})<br>⭐ ${pts()} điểm · Huy hiệu: ${Z.map((z,i)=>S.bd[i]?z.bi:"▫️").join(" ")}</div>`;
+ Z.forEach((z,i)=>{const lk=i&&!S.bd[i-1];h+=`<button class="z ${lk?"lk":""}" ${lk?"disabled":""} onclick=play(${i})><span class=big>${lk?"🔒":z.i}</span><span><b>${z.n}</b><br><small>${S.bd[i]?z.bi+" "+z.b+" · ":""}Tốt nhất: ${S.sc[i]}/8</small></span></button>`});
+ if(S.bd.every(x=>x))h+=`<div class="c ok" style="text-align:center"><div class=big>🏆</div><b>Hiệp sĩ Hữu Tỉ!</b><br>Em đã lấy lại đủ 5 huy hiệu và cứu vương quốc!</div>`;
+ A(h+`<p class=s>Đúng từ 6/8 câu để nhận huy hiệu và mở vùng tiếp theo. Có thể chơi lại bất cứ lúc nào.</p>`)}
+
+function play(i){cz=i;qi=0;cor=0;ask()}
+
+function ask(){
+ const z=Z[cz],q=z.q[qi];
+ cur=q[2].map(t=>({t,ok:0})).concat({t:q[1],ok:1});
+ if(cz==0&&qi!=6)cur=["<",">","="].map(t=>({t,ok:t==q[1]}));else cur.sort(()=>Math.random()-.5);
+ A(`<div class=s>${z.i} ${z.n} · Câu ${qi+1}/8 · ⭐ ${cor*10}</div><div class=bar><i style="width:${qi*12.5}%"></i></div>
+ ${qi==0?`<div class=c>🦊 <b>Phân Số:</b> ${z.s}</div>`:""}
+ <div class=c><div class=q>${F(q[0])}</div></div>
+ ${cur.map((o,k)=>`<button class=o onclick=ans(${k})>${F(o.t)}</button>`).join("")}`)}
+
+function ans(k){
+ const z=Z[cz],q=z.q[qi],o=cur[k];
+ if(o.ok)cor++;else S.wr[cz*8+qi]++;
+ save();
+ A(`<div class=s>${z.i} ${z.n} · Câu ${qi+1}/8</div>
+ <div class=c><div class=q>${F(q[0])}</div></div>
+ <div class="c ${o.ok?"ok":"no"}"><b>${o.ok?"✅ Chính xác! +10 điểm":"❌ Chưa đúng rồi, em xem lời giải nhé"}</b><br>Em chọn: ${F(o.t)}<br>Đáp án đúng: <b>${F(q[1])}</b></div>
+ <div class=c><b>📖 Lời giải từng bước</b><ol>${q[4].split("|").map(x=>"<li>"+F(x)+"</li>").join("")}</ol></div>
+ ${o.ok?"":`<div class="c wn"><b>⚠️ Lỗi thường gặp:</b> ${F(q[3])}</div>`}
+ <button class=b onclick=nx()>${qi<7?"Câu tiếp theo ➜":"Xem kết quả ➜"}</button>`)}
+
+function nx(){qi++;qi<8?ask():fin()}
+
+function fin(){
+ const z=Z[cz],pass=cor>=6;
+ S.sc[cz]=Math.max(S.sc[cz],cor);if(pass)S.bd[cz]=1;save();
+ A(`<div class="c ${pass?"ok":"no"}" style="text-align:center"><div class=big>${pass?z.bi:"🦊"}</div>
+ <h2>${pass?"Nhận huy hiệu "+z.b+"!":"Chưa đủ huy hiệu"}</h2><p>Em đúng <b>${cor}/8</b> câu (+${cor*10} điểm).<br>${pass?"Vùng đất đã được giải cứu!":"Cần đúng ít nhất 6/8 câu. Đọc lại lời giải và thử lại nhé!"}</p></div>
+ <div class=c id=st>⏳ Đang gửi kết quả...</div>
+ ${pass&&cz<4?`<button class=b onclick=play(${cz+1})>Đến ${Z[cz+1].n} ➜</button>`:""}
+ <button class=o onclick=play(${cz})>🔁 Chơi lại vùng này</button><button class=o onclick=map()>🗺️ Về bản đồ</button><button class=o onclick=snd()>📤 Gửi lại kết quả</button>`);
+ snd()}
+
+function snd(){
+ const st=document.getElementById("st");const m=t=>{const e=document.getElementById("st");if(e)e.textContent=t};
+ S.sec+=Math.round((Date.now()-T)/1000);T=Date.now();
+ if(!URL_SHEET){m("Chế độ chơi thử: chưa nối với Google Sheet.");return}
+ fetch(URL_SHEET,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},
+  body:JSON.stringify({name:S.name,cls:S.cls,sc:S.sc,badges:Z.filter((z,i)=>S.bd[i]).map(z=>z.b).join(", "),min:Math.round(S.sec/60),wr:S.wr})})
+ .then(()=>m("✅ Đã gửi kết quả cho thầy/cô."))
+ .catch(()=>m("⚠️ Chưa gửi được. Kiểm tra mạng rồi bấm Gửi lại."))}
+
+home();
+</script></body></html>
